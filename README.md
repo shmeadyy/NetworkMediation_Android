@@ -6,6 +6,6 @@ SDK version: 3.12.0 as of 9/16
 
 Contributors:
 
-Joe Chen
-Laura Mead
-Rupa Satrasala
+* Joe Chen
+* Laura Mead
+* Rupa Satrasala
