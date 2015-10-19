@@ -23,4 +23,7 @@
     <string name="ad_unit_id_interstitial">24534e1901884e398f1253216226017e</string>
     <string name="ad_unit_id_native">11a17b188668469fb0412708c3d16813</string>
     <string name="swipe_text"><![CDATA[< Swipe Left & Right >]]></string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

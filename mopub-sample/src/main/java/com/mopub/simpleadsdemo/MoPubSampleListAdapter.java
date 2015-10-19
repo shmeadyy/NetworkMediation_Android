@@ -41,6 +41,7 @@ class MoPubSampleListAdapter extends ArrayAdapter<MoPubSampleAdUnit> {
             viewHolder.description = (TextView) view.findViewById(R.id.banner_description);
             viewHolder.adUnitId = (TextView) view.findViewById(R.id.banner_ad_unit_id);
             viewHolder.trashCan = (ImageView) view.findViewById(R.id.banner_delete);
+            viewHolder.trashCan = (ImageView) view.findViewById(R.id.banner_delete);
         } else {
             view = convertView;
             viewHolder = (ViewHolder) view.getTag();

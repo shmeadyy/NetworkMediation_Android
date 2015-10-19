@@ -1,6 +1,7 @@
 package com.mopub.simpleadsdemo;
 
 import android.annotation.TargetApi;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -10,7 +11,7 @@ import android.webkit.WebView;
 import com.mopub.common.MoPub;
 
 
-public class MoPubSampleActivity extends FragmentActivity {
+public class MoPubSampleActivity extends FragmentActivity implements MediationHome.OnFragmentInteractionListener {
 
     // Sample app web views are debuggable.
     static {
@@ -38,16 +39,22 @@ public class MoPubSampleActivity extends FragmentActivity {
         MoPub.setLocationPrecision(4);
 
         if (findViewById(R.id.fragment_container) != null) {
-            final MoPubListFragment listFragment = new MoPubListFragment();
-            listFragment.setArguments(getIntent().getExtras());
+            final MediationHome collectionFragment = new MediationHome();
+            collectionFragment.setArguments(getIntent().getExtras());
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
-                    .add(R.id.fragment_container, listFragment)
+                    .add(R.id.fragment_container, collectionFragment)
                     .commit();
         }
 
         // Intercepts all logs including Level.FINEST so we can show a toast
         // that is not normally user-facing. This is only used for native ads.
         LoggingUtils.enableCanaryLogging(this);
+    }
+
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }
