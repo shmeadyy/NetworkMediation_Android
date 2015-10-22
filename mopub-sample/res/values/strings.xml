@@ -25,5 +25,9 @@
     <string name="swipe_text"><![CDATA[< Swipe Left & Right >]]></string>
 
 <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="bannerButton">BANNER</string>
+    <string name="interstitialButton">INTERSTITIAL</string>
+    <string name="nativeButton">NATIVE</string>
+    <string name="rewardedVideoButton">REWARDED VIDEO</string>
+    <string name="adUnitTextView">Ad Unit:</string>
 </resources>

@@ -1,9 +1,89 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" tools:context="com.mopub.simpleadsdemo.MediationHome">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="wrap_content"
+    android:layout_height="wrap_content" tools:context="com.mopub.simpleadsdemo.MediationHome">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <!-- TODO: Update blank relative layout -->
 
-</FrameLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/adUnitTextView"
+        android:id="@+id/adUnitTextView"
+        android:textSize="22sp"
+        android:textColor="#000000"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="15dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bannerButton"
+        android:id="@+id/bannerButton"
+        android:layout_below="@+id/adUnitTextView"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="false"
+        android:layout_marginRight="24dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="24dp"
+        android:textColor="#80ffffff"
+        android:background="#ac0f8d10"
+        android:layout_marginTop="8dp"
+        android:textSize="20dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/interstitialButton"
+        android:id="@+id/interstitialButton"
+        android:layout_below="@+id/bannerButton"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="false"
+        android:layout_marginRight="24dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="24dp"
+        android:textColor="#80ffffff"
+        android:background="#c714888c"
+        android:layout_marginTop="8dp"
+        android:textSize="20dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/nativeButton"
+        android:id="@+id/nativeButton"
+        android:layout_below="@+id/interstitialButton"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="false"
+        android:layout_marginRight="24dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="24dp"
+        android:textColor="#80ffffff"
+        android:background="#acafb021"
+        android:layout_marginTop="8dp"
+        android:textSize="20dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/rewardedVideoButton"
+        android:id="@+id/rewardedVideoButton"
+        android:layout_below="@+id/nativeButton"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="false"
+        android:layout_marginRight="24dp"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="24dp"
+        android:textColor="#80ffffff"
+        android:background="#b5aa3f00"
+        android:layout_marginTop="8dp"
+        android:textSize="20dp" />
+
+</RelativeLayout>
