@@ -29,5 +29,7 @@
     <string name="interstitialButton">INTERSTITIAL</string>
     <string name="nativeButton">NATIVE</string>
     <string name="rewardedVideoButton">REWARDED VIDEO</string>
-    <string name="adUnitTextView">Ad Unit:</string>
+    <string name="adUnitTextView">Ad Unit ID:</string>
+    <string name="network_ad_unit_hint">Type network ad unit here</string>
+    <string name="go_button">GO</string>
 </resources>
