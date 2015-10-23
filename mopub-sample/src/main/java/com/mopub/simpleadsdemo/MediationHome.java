@@ -52,7 +52,7 @@ public class MediationHome extends Fragment {
     }
 
     public MediationHome() {
-        // Required empty public constructor
+
     }
 
     @Override

@@ -25,10 +25,10 @@
     <string name="swipe_text"><![CDATA[< Swipe Left & Right >]]></string>
 
 <!-- TODO: Remove or change this placeholder text -->
-    <string name="bannerButton">BANNER</string>
-    <string name="interstitialButton">INTERSTITIAL</string>
-    <string name="nativeButton">NATIVE</string>
-    <string name="rewardedVideoButton">REWARDED VIDEO</string>
+    <string name="bannerButton">Banner</string>
+    <string name="interstitialButton">Interstitial</string>
+    <string name="nativeButton">Native</string>
+    <string name="rewardedVideoButton">Rewarded Video</string>
     <string name="adUnitTextView">Ad Unit ID:</string>
     <string name="network_ad_unit_hint">Type network ad unit here</string>
     <string name="go_button">GO</string>
