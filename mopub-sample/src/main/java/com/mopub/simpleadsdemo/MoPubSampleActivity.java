@@ -11,7 +11,7 @@ import android.webkit.WebView;
 import com.mopub.common.MoPub;
 
 
-public class MoPubSampleActivity extends FragmentActivity implements MediationHome.OnFragmentInteractionListener {
+public class MoPubSampleActivity extends FragmentActivity implements MediationHomeFragment.OnFragmentInteractionListener {
 
     // Sample app web views are debuggable.
     static {
@@ -28,7 +28,7 @@ public class MoPubSampleActivity extends FragmentActivity implements MediationHo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.fragment_mediation_home);
 
         if (savedInstanceState != null) {
             return;
@@ -39,7 +39,7 @@ public class MoPubSampleActivity extends FragmentActivity implements MediationHo
         MoPub.setLocationPrecision(4);
 
         if (findViewById(R.id.fragment_container) != null) {
-            final MediationHome collectionFragment = new MediationHome();
+            final MediationHomeFragment collectionFragment = new MediationHomeFragment();
             collectionFragment.setArguments(getIntent().getExtras());
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()

@@ -1,6 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="wrap_content"
-    android:layout_height="wrap_content" tools:context="com.mopub.simpleadsdemo.MediationHome">
+    android:layout_height="wrap_content" tools:context="com.mopub.simpleadsdemo.MediationHomeFragment">
 
     <!-- TODO: Update blank relative layout -->
 
@@ -11,7 +11,6 @@
         android:text="@string/adUnitTextView"
         android:id="@+id/adUnitTextView"
         android:textSize="22sp"
-        android:textColor="#000000"
         android:layout_marginLeft="20dp"
         android:layout_marginStart="25dp"
         android:layout_marginTop="15dp"
@@ -77,7 +76,8 @@
         android:text="@string/go_button"
         android:id="@+id/go_button"
         android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/radioGroup"
-        android:layout_alignEnd="@+id/radioGroup" />
+        android:layout_alignRight="@+id/adFormatRadioGroup"
+        android:layout_alignEnd="@+id/adFormatRadioGroup"
+        android:nestedScrollingEnabled="true" />
 
 </RelativeLayout>
