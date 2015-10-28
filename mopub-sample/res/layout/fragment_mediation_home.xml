@@ -1,6 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="wrap_content"
-    android:layout_height="wrap_content" tools:context="com.mopub.simpleadsdemo.MediationHomeFragment">
+    android:layout_height="wrap_content" tools:context="com.mopub.simpleadsdemo.MediationHomeFragment"
+    android:id="@+id/fragment_mediation_home">
 
     <!-- TODO: Update blank relative layout -->
 

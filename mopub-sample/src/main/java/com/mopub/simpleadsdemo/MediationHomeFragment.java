@@ -3,7 +3,6 @@ package com.mopub.simpleadsdemo;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,9 +55,9 @@ public class MediationHomeFragment extends Fragment {
         return fragment;
     }
 
-    public MediationHomeFragment() {
-
-    }
+//    public MediationHomeFragment() {
+//
+//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,6 +66,7 @@ public class MediationHomeFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        Log.i("MOPUB", "Inside onCreate()");
     }
 
 
@@ -74,27 +74,27 @@ public class MediationHomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final View view = inflater.inflate(R.layout.fragment_mediation_home, container, false);
-        adFormatRadioGroup = (RadioGroup) view.findViewById(R.id.adFormatRadioGroup);
+        Log.i("MOPUB", "Inside onCreateView()");
+        final View mediationView = inflater.inflate(R.layout.fragment_mediation_home, container, false);
+        adFormatRadioGroup = (RadioGroup) mediationView.findViewById(R.id.adFormatRadioGroup);
         adFormatRadioGroup.clearCheck();
 
-
-        view.findViewById(R.id.go_button).setOnClickListener(new View.OnClickListener() {
+        mediationView.findViewById(R.id.go_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.v("MoPub", "Inside onClick method");
-                final String adUnitId = ((TextView) view.findViewById(R.id.adUnitId)).getText().toString();
-                final RadioGroup adFormatRadioGroup = (RadioGroup) view.findViewById(R.id.adFormatRadioGroup);
-                final RadioButton checkedRadioButton = (RadioButton) view.findViewById(adFormatRadioGroup.getCheckedRadioButtonId());
+                Log.i("MOPUB", "Inside onClick()");
+                final String adUnitId = ((TextView) mediationView.findViewById(R.id.adUnitId)).getText().toString();
+                final RadioGroup adFormatRadioGroup = (RadioGroup) mediationView.findViewById(R.id.adFormatRadioGroup);
+                final RadioButton checkedRadioButton = (RadioButton) mediationView.findViewById(adFormatRadioGroup.getCheckedRadioButtonId());
 
                 final String radioButtonText = checkedRadioButton.getText().toString();
 
-                Toast toast = Toast.makeText(view.getContext(), adUnitId + " " + radioButtonText, Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(mediationView.getContext(), adUnitId + " " + radioButtonText, Toast.LENGTH_LONG);
                 toast.show();
             }
         });
 
-        return view;
+        return mediationView;
 
     }
 
