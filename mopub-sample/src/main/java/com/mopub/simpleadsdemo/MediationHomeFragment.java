@@ -12,7 +12,9 @@ import android.widget.TextView;
 import android.widget.RadioButton;
 import android.widget.Toast;
 import android.util.Log;
-import android.widget.Button;
+import android.content.Intent;
+
+//import com.mopub.common.MoPub;
 
 
 /**
@@ -55,10 +57,6 @@ public class MediationHomeFragment extends Fragment {
         return fragment;
     }
 
-//    public MediationHomeFragment() {
-//
-//    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,7 +64,6 @@ public class MediationHomeFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        Log.i("MOPUB", "Inside onCreate()");
     }
 
 
@@ -74,7 +71,6 @@ public class MediationHomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        Log.i("MOPUB", "Inside onCreateView()");
         final View mediationView = inflater.inflate(R.layout.fragment_mediation_home, container, false);
         adFormatRadioGroup = (RadioGroup) mediationView.findViewById(R.id.adFormatRadioGroup);
         adFormatRadioGroup.clearCheck();
@@ -91,6 +87,25 @@ public class MediationHomeFragment extends Fragment {
 
                 Toast toast = Toast.makeText(mediationView.getContext(), adUnitId + " " + radioButtonText, Toast.LENGTH_LONG);
                 toast.show();
+
+                switch (radioButtonText) {
+                    case "Banner":
+                        Intent a = new Intent(mediationView.getContext(), BannerDetailFragment.class);
+                        startActivity(a);
+                        break;
+                    case "Interstitial":
+                        Intent b = new Intent(mediationView.getContext(), InterstitialDetailFragment.class);
+                        startActivity(b);
+                        break;
+                    case "Native":
+                        Intent c = new Intent(mediationView.getContext(), NativeListViewFragment.class);
+                        startActivity(c);
+                        break;
+                    case "Rewarded Video":
+                        Intent d = new Intent(mediationView.getContext(), RewardedVideoDetailFragment.class);
+                        startActivity(d);
+                        break;
+                }
             }
         });
 

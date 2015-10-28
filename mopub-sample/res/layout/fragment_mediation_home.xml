@@ -27,9 +27,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="4dp"
         android:singleLine="true"
-        android:hint="@string/network_ad_unit_hint"
         android:ellipsize="start"
-        android:gravity="center_horizontal" />
+        android:gravity="top|left" />
 
     <RadioGroup
         android:layout_width="wrap_content"
