@@ -13,6 +13,11 @@ import android.widget.RadioButton;
 import android.widget.Toast;
 import android.util.Log;
 import android.content.Intent;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+
+import com.mopub.common.logging.MoPubLog;
 
 //import com.mopub.common.MoPub;
 
@@ -74,7 +79,7 @@ public class MediationHomeFragment extends Fragment {
         final View mediationView = inflater.inflate(R.layout.fragment_mediation_home, container, false);
         adFormatRadioGroup = (RadioGroup) mediationView.findViewById(R.id.adFormatRadioGroup);
         adFormatRadioGroup.clearCheck();
-
+        Log.i("MOPUB", "Inside OnCreateView()");
         mediationView.findViewById(R.id.go_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,22 +93,36 @@ public class MediationHomeFragment extends Fragment {
                 Toast toast = Toast.makeText(mediationView.getContext(), adUnitId + " " + radioButtonText, Toast.LENGTH_LONG);
                 toast.show();
 
+                final FragmentTransaction fragmentTransaction =
+                        getActivity().getSupportFragmentManager().beginTransaction();
+
+
                 switch (radioButtonText) {
                     case "Banner":
-                        Intent a = new Intent(mediationView.getContext(), BannerDetailFragment.class);
-                        startActivity(a);
+                        MoPubLog.i("Inside the switch statement, banner case");
+                        Fragment newFragment = null;
+                        try {
+                             newFragment = BannerDetailFragment.class.newInstance();
+                        } catch (java.lang.InstantiationException e) {
+                            MoPubLog.e("Error creating fragment for class " + newFragment, e);
+                            return;
+                        } catch (IllegalAccessException e) {
+                            MoPubLog.e("Error creating fragment for class " + newFragment, e);
+                            return;
+                        }
+                        fragmentTransaction
+                                .replace(R.id.fragment_container, newFragment)
+                                .addToBackStack(null)
+                                .commit();
                         break;
                     case "Interstitial":
-                        Intent b = new Intent(mediationView.getContext(), InterstitialDetailFragment.class);
-                        startActivity(b);
+
                         break;
                     case "Native":
-                        Intent c = new Intent(mediationView.getContext(), NativeListViewFragment.class);
-                        startActivity(c);
+
                         break;
                     case "Rewarded Video":
-                        Intent d = new Intent(mediationView.getContext(), RewardedVideoDetailFragment.class);
-                        startActivity(d);
+
                         break;
                 }
             }
