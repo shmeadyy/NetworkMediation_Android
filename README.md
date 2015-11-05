@@ -6,6 +6,5 @@ MoPub's Network Mediation Test app for Android which will allow networks to test
 
 ##Contributors:
 
-* Joe Chen
 * Laura Mead
-* Rupa Satrasala
+* Joe Chen

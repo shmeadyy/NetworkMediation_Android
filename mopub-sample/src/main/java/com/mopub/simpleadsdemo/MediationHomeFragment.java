@@ -12,14 +12,9 @@ import android.widget.TextView;
 import android.widget.RadioButton;
 import android.widget.Toast;
 import android.util.Log;
-import android.content.Intent;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import com.mopub.common.logging.MoPubLog;
-
-//import com.mopub.common.MoPub;
 
 
 /**
@@ -80,7 +75,7 @@ public class MediationHomeFragment extends Fragment {
         adFormatRadioGroup = (RadioGroup) mediationView.findViewById(R.id.adFormatRadioGroup);
         adFormatRadioGroup.clearCheck();
         Log.i("MOPUB", "Inside OnCreateView()");
-        mediationView.findViewById(R.id.go_button).setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener clickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i("MOPUB", "Inside onClick()");
@@ -102,7 +97,7 @@ public class MediationHomeFragment extends Fragment {
                         MoPubLog.i("Inside the switch statement, banner case");
                         Fragment newFragment = null;
                         try {
-                             newFragment = BannerDetailFragment.class.newInstance();
+                            newFragment = BannerDetailFragment.class.newInstance();
                         } catch (java.lang.InstantiationException e) {
                             MoPubLog.e("Error creating fragment for class " + newFragment, e);
                             return;
@@ -111,7 +106,7 @@ public class MediationHomeFragment extends Fragment {
                             return;
                         }
                         fragmentTransaction
-                                .replace(R.id.fragment_container, newFragment)
+                                .replace(R.id.fragment_mediation_home, newFragment)
                                 .addToBackStack(null)
                                 .commit();
                         break;
@@ -126,8 +121,9 @@ public class MediationHomeFragment extends Fragment {
                         break;
                 }
             }
-        });
-
+        };
+        mediationView.findViewById(R.id.go_button).setOnClickListener(clickListener);
+        Log.i("MOPUB", "After clickListener");
         return mediationView;
 
     }
