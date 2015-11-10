@@ -86,7 +86,7 @@ public class MoPubListFragment extends ListFragment implements TrashCanClickList
         fragment.setArguments(adConfiguration.toBundle());
 
         fragmentTransaction
-                .replace(R.id.fragment_mediation_home, fragment)
+                .replace(R.id.fragment_container, fragment)
                 .addToBackStack(null)
                 .commit();
     }

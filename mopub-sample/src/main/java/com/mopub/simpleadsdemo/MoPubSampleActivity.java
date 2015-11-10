@@ -29,7 +29,7 @@ public class MoPubSampleActivity extends FragmentActivity implements MediationHo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_mediation_home);
+        setContentView(R.layout.main);
 
         if (savedInstanceState != null) {
             return;
@@ -39,16 +39,13 @@ public class MoPubSampleActivity extends FragmentActivity implements MediationHo
         MoPub.setLocationAwareness(MoPub.LocationAwareness.TRUNCATED);
         MoPub.setLocationPrecision(4);
 
-        if (findViewById(R.id.fragment_mediation_home) != null) {
+        if (findViewById(R.id.fragment_container) != null) {
             final MediationHomeFragment collectionFragment = new MediationHomeFragment();
             collectionFragment.setArguments(getIntent().getExtras());
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
-                    .add(R.id.fragment_mediation_home, collectionFragment)
+                    .add(R.id.fragment_container, collectionFragment)
                     .commit();
-            Log.i("MOPUB", "found fragment_mediation_home XML");
-        } else {
-            Log.i("MOPUB", "fragment_container is null");
         }
 
         // Intercepts all logs including Level.FINEST so we can show a toast

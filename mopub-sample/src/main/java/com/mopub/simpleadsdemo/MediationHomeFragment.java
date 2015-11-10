@@ -78,10 +78,10 @@ public class MediationHomeFragment extends Fragment {
         View.OnClickListener clickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("MOPUB", "Inside onClick()");
                 final String adUnitId = ((TextView) mediationView.findViewById(R.id.adUnitId)).getText().toString();
                 final RadioGroup adFormatRadioGroup = (RadioGroup) mediationView.findViewById(R.id.adFormatRadioGroup);
                 final RadioButton checkedRadioButton = (RadioButton) mediationView.findViewById(adFormatRadioGroup.getCheckedRadioButtonId());
+                Fragment newFragment = null;
 
                 final String radioButtonText = checkedRadioButton.getText().toString();
 
@@ -94,10 +94,14 @@ public class MediationHomeFragment extends Fragment {
 
                 switch (radioButtonText) {
                     case "Banner":
-                        MoPubLog.i("Inside the switch statement, banner case");
-                        Fragment newFragment = null;
                         try {
                             newFragment = BannerDetailFragment.class.newInstance();
+                            final MoPubSampleAdUnit bannerAdUnit =
+                                    new MoPubSampleAdUnit.Builder(adUnitId, MoPubSampleAdUnit.AdType.BANNER)
+                                            .description("")
+                                            .isUserDefined(true)
+                                            .build();
+                            newFragment.setArguments(bannerAdUnit.toBundle());
                         } catch (java.lang.InstantiationException e) {
                             MoPubLog.e("Error creating fragment for class " + newFragment, e);
                             return;
@@ -106,12 +110,30 @@ public class MediationHomeFragment extends Fragment {
                             return;
                         }
                         fragmentTransaction
-                                .replace(R.id.fragment_mediation_home, newFragment)
+                                .replace(R.id.fragment_container, newFragment)
                                 .addToBackStack(null)
                                 .commit();
                         break;
                     case "Interstitial":
-
+                        try {
+                            newFragment = InterstitialDetailFragment.class.newInstance();
+                            final MoPubSampleAdUnit interstitialAdUnit =
+                                    new MoPubSampleAdUnit.Builder(adUnitId, MoPubSampleAdUnit.AdType.INTERSTITIAL)
+                                            .description("")
+                                            .isUserDefined(true)
+                                            .build();
+                            newFragment.setArguments(interstitialAdUnit.toBundle());
+                        } catch (java.lang.InstantiationException e) {
+                            MoPubLog.e("Error creating fragment for class " + newFragment, e);
+                            return;
+                        } catch (IllegalAccessException e) {
+                            MoPubLog.e("Error creating fragment for class " + newFragment, e);
+                            return;
+                        }
+                        fragmentTransaction
+                                .replace(R.id.fragment_container, newFragment)
+                                .addToBackStack(null)
+                                .commit();
                         break;
                     case "Native":
 
@@ -123,7 +145,6 @@ public class MediationHomeFragment extends Fragment {
             }
         };
         mediationView.findViewById(R.id.go_button).setOnClickListener(clickListener);
-        Log.i("MOPUB", "After clickListener");
         return mediationView;
 
     }
