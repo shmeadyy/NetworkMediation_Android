@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -67,6 +68,11 @@ public class NativeListViewFragment extends Fragment {
         for (int i = 0; i < 100; ++i) {
             adapter.add("Item " + i);
         }
+
+//        final ListView clickListView = (ListView) view.findViewById(R.id.click_list_view);
+//        clickListView.setOnClickListener(new AdapterView.OnItemClickListener(){
+//
+//        });
 
         // Create an ad adapter that gets its positioning information from the MoPub Ad Server.
         // This adapter will be used in place of the original adapter for the ListView.

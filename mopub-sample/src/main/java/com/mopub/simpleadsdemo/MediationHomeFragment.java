@@ -136,10 +136,46 @@ public class MediationHomeFragment extends Fragment {
                                 .commit();
                         break;
                     case "Native":
-
+                        try {
+                            newFragment = NativeListViewFragment.class.newInstance();
+                            final MoPubSampleAdUnit nativeAdUnit =
+                                    new MoPubSampleAdUnit.Builder(adUnitId, MoPubSampleAdUnit.AdType.LIST_VIEW)
+                                            .description("")
+                                            .isUserDefined(true)
+                                            .build();
+                            newFragment.setArguments(nativeAdUnit.toBundle());
+                        } catch (java.lang.InstantiationException e) {
+                            MoPubLog.e("Error creating fragment for class " + newFragment, e);
+                            return;
+                        } catch (IllegalAccessException e) {
+                            MoPubLog.e("Error creating fragment for class " + newFragment, e);
+                            return;
+                        }
+                        fragmentTransaction
+                                .replace(R.id.fragment_container, newFragment)
+                                .addToBackStack(null)
+                                .commit();
                         break;
                     case "Rewarded Video":
-
+                        try {
+                            newFragment = RewardedVideoDetailFragment.class.newInstance();
+                            final MoPubSampleAdUnit rewardedAdUnit =
+                                    new MoPubSampleAdUnit.Builder(adUnitId, MoPubSampleAdUnit.AdType.LIST_VIEW)
+                                            .description("")
+                                            .isUserDefined(true)
+                                            .build();
+                            newFragment.setArguments(rewardedAdUnit.toBundle());
+                        } catch (java.lang.InstantiationException e) {
+                            MoPubLog.e("Error creating fragment for class " + newFragment, e);
+                            return;
+                        } catch (IllegalAccessException e) {
+                            MoPubLog.e("Error creating fragment for class " + newFragment, e);
+                            return;
+                        }
+                        fragmentTransaction
+                                .replace(R.id.fragment_container, newFragment)
+                                .addToBackStack(null)
+                                .commit();
                         break;
                 }
             }

@@ -51,6 +51,11 @@
     </LinearLayout>
 
     <ListView
+        android:id="@+id/click_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"/>
+    <ListView
         android:id="@+id/native_list_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
