@@ -32,4 +32,7 @@
     <string name="adUnitTextView">Ad Unit ID:</string>
     <string name="network_ad_unit_hint">Type network ad unit here</string>
     <string name="go_button">GO</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

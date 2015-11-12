@@ -1,6 +1,8 @@
 package com.mopub.simpleadsdemo;
 
+import android.app.Activity;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.support.v4.app.FragmentTransaction;
 
 import com.mopub.nativeads.MoPubAdAdapter;
 import com.mopub.nativeads.MoPubNativeAdRenderer;
@@ -18,11 +21,15 @@ import com.mopub.nativeads.ViewBinder;
 import java.util.EnumSet;
 
 import static com.mopub.nativeads.RequestParameters.NativeAdAsset;
+import com.mopub.common.logging.MoPubLog;
+
 
 public class NativeListViewFragment extends Fragment {
     private MoPubAdAdapter mAdAdapter;
     private MoPubSampleAdUnit mAdConfiguration;
     private RequestParameters mRequestParameters;
+
+//    private OnFragmentInteractionListener mListener;
 
     @Override
     public View onCreateView(final LayoutInflater inflater,
@@ -67,12 +74,40 @@ public class NativeListViewFragment extends Fragment {
                 android.R.layout.simple_list_item_1);
         for (int i = 0; i < 100; ++i) {
             adapter.add("Item " + i);
+
         }
 
-//        final ListView clickListView = (ListView) view.findViewById(R.id.click_list_view);
-//        clickListView.setOnClickListener(new AdapterView.OnItemClickListener(){
-//
-//        });
+        AdapterView.OnItemClickListener listItemClicked = new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Fragment newFragment = null;
+
+                final FragmentTransaction fragmentTransaction =
+                        getActivity().getSupportFragmentManager().beginTransaction();
+
+                try {
+                    newFragment = NativeGalleryFragment.class.newInstance();
+                    final MoPubSampleAdUnit nativeGalleryAdUnit =
+                            new MoPubSampleAdUnit.Builder(adUnitId, MoPubSampleAdUnit.AdType.LIST_VIEW)
+                                    .description("")
+                                    .isUserDefined(true)
+                                    .build();
+                    newFragment.setArguments(nativeGalleryAdUnit.toBundle());
+                } catch (java.lang.InstantiationException e) {
+                    MoPubLog.e("Error creating fragment for class " + newFragment, e);
+                    return;
+                } catch (IllegalAccessException e) {
+                    MoPubLog.e("Error creating fragment for class " + newFragment, e);
+                    return;
+                }
+                fragmentTransaction
+                        .replace(R.id.fragment_container, newFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        };
+
+        listView.setOnItemClickListener(listItemClicked);
 
         // Create an ad adapter that gets its positioning information from the MoPub Ad Server.
         // This adapter will be used in place of the original adapter for the ListView.
@@ -92,6 +127,8 @@ public class NativeListViewFragment extends Fragment {
         // Register the renderer with the MoPubAdAdapter and then set the adapter on the ListView.
         mAdAdapter.registerAdRenderer(adRenderer);
         listView.setAdapter(mAdAdapter);
+
+
         return view;
     }
 
@@ -104,8 +141,23 @@ public class NativeListViewFragment extends Fragment {
 
     @Override
     public void onResume() {
-        // MoPub recommends loading knew ads when the user returns to your activity.
+        // MoPub recommends loading new ads when the user returns to your activity.
         mAdAdapter.loadAds(mAdConfiguration.getAdUnitId(), mRequestParameters);
         super.onResume();
     }
+
+//    @Override
+//    public void onAttach(Activity activity) {
+//        super.onAttach(activity);
+//        try {
+//            mListener = (OnFragmentInteractionListener) activity;
+//        } catch (ClassCastException e) {
+//            throw new ClassCastException(activity.toString()
+//                    + " must implement OnFragmentInteractionListener");
+//        }
+//    }
+//    public interface OnFragmentInteractionListener {
+//        // TODO: Update argument type and name
+//        public void onFragmentInteraction(Uri uri);
+//    }
 }
