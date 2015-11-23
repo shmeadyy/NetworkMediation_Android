@@ -78,7 +78,7 @@ public class MediationHomeFragment extends Fragment {
         View.OnClickListener clickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String adUnitId = ((TextView) mediationView.findViewById(R.id.adUnitId)).getText().toString();
+                String adUnitId = ((TextView) mediationView.findViewById(R.id.adUnitId)).getText().toString();
                 final RadioGroup adFormatRadioGroup = (RadioGroup) mediationView.findViewById(R.id.adFormatRadioGroup);
                 final RadioButton checkedRadioButton = (RadioButton) mediationView.findViewById(adFormatRadioGroup.getCheckedRadioButtonId());
                 Fragment newFragment = null;
@@ -91,13 +91,15 @@ public class MediationHomeFragment extends Fragment {
                 final FragmentTransaction fragmentTransaction =
                         getActivity().getSupportFragmentManager().beginTransaction();
 
-
-                switch (radioButtonText) {
+                switch(radioButtonText) {
                     case "Banner":
                         try {
                             newFragment = BannerDetailFragment.class.newInstance();
+                            if (adUnitId == null){
+                                adUnitId = "b195f8dd8ded45fe847ad89ed1d016da";
+                            }
                             final MoPubSampleAdUnit bannerAdUnit =
-                                    new MoPubSampleAdUnit.Builder(adUnitId, MoPubSampleAdUnit.AdType.BANNER)
+                                    new MoPubSampleAdUnit.Builder("b195f8dd8ded45fe847ad89ed1d016da", MoPubSampleAdUnit.AdType.BANNER)
                                             .description("")
                                             .isUserDefined(true)
                                             .build();
@@ -117,6 +119,9 @@ public class MediationHomeFragment extends Fragment {
                     case "Interstitial":
                         try {
                             newFragment = InterstitialDetailFragment.class.newInstance();
+                            if(adUnitId == null){
+                                adUnitId = "24534e1901884e398f1253216226017e";
+                            }
                             final MoPubSampleAdUnit interstitialAdUnit =
                                     new MoPubSampleAdUnit.Builder(adUnitId, MoPubSampleAdUnit.AdType.INTERSTITIAL)
                                             .description("")
@@ -138,6 +143,9 @@ public class MediationHomeFragment extends Fragment {
                     case "Native":
                         try {
                             newFragment = NativeListViewFragment.class.newInstance();
+                            if(adUnitId == null){
+                                adUnitId = "11a17b188668469fb0412708c3d16813";
+                            }
                             final MoPubSampleAdUnit nativeAdUnit =
                                     new MoPubSampleAdUnit.Builder(adUnitId, MoPubSampleAdUnit.AdType.LIST_VIEW)
                                             .description("")
