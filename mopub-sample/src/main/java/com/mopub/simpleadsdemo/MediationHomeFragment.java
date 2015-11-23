@@ -95,11 +95,13 @@ public class MediationHomeFragment extends Fragment {
                     case "Banner":
                         try {
                             newFragment = BannerDetailFragment.class.newInstance();
-                            if (adUnitId == null){
+                            if (adUnitId.length() != 32){
                                 adUnitId = "b195f8dd8ded45fe847ad89ed1d016da";
+                            } else {
+                                Log.e("LAURA", "Entered else statement");
                             }
                             final MoPubSampleAdUnit bannerAdUnit =
-                                    new MoPubSampleAdUnit.Builder("b195f8dd8ded45fe847ad89ed1d016da", MoPubSampleAdUnit.AdType.BANNER)
+                                    new MoPubSampleAdUnit.Builder(adUnitId, MoPubSampleAdUnit.AdType.BANNER)
                                             .description("")
                                             .isUserDefined(true)
                                             .build();
@@ -119,7 +121,7 @@ public class MediationHomeFragment extends Fragment {
                     case "Interstitial":
                         try {
                             newFragment = InterstitialDetailFragment.class.newInstance();
-                            if(adUnitId == null){
+                            if(adUnitId.length() != 32){
                                 adUnitId = "24534e1901884e398f1253216226017e";
                             }
                             final MoPubSampleAdUnit interstitialAdUnit =
@@ -143,7 +145,7 @@ public class MediationHomeFragment extends Fragment {
                     case "Native":
                         try {
                             newFragment = NativeListViewFragment.class.newInstance();
-                            if(adUnitId == null){
+                            if(adUnitId.length() != 32){
                                 adUnitId = "11a17b188668469fb0412708c3d16813";
                             }
                             final MoPubSampleAdUnit nativeAdUnit =
