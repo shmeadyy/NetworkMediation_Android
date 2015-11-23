@@ -85,9 +85,6 @@ public class MediationHomeFragment extends Fragment {
 
                 final String radioButtonText = checkedRadioButton.getText().toString();
 
-                Toast toast = Toast.makeText(mediationView.getContext(), adUnitId + " " + radioButtonText, Toast.LENGTH_LONG);
-                toast.show();
-
                 final FragmentTransaction fragmentTransaction =
                         getActivity().getSupportFragmentManager().beginTransaction();
 
@@ -97,9 +94,8 @@ public class MediationHomeFragment extends Fragment {
                             newFragment = BannerDetailFragment.class.newInstance();
                             if (adUnitId.length() != 32){
                                 adUnitId = "b195f8dd8ded45fe847ad89ed1d016da";
-                            } else {
-                                Log.e("LAURA", "Entered else statement");
                             }
+                            
                             final MoPubSampleAdUnit bannerAdUnit =
                                     new MoPubSampleAdUnit.Builder(adUnitId, MoPubSampleAdUnit.AdType.BANNER)
                                             .description("")
