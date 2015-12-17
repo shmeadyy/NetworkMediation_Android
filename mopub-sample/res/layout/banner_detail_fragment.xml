@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:id="@+id/bannerCollapsed">
 
     <TextView
         android:id="@+id/description"
@@ -59,5 +60,52 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp">
     </com.mopub.mobileads.MoPubView>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="50dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/bannerLoaded"
+            android:id="@+id/bannerLoaded"
+            android:layout_marginBottom="7dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/bannerFailed"
+            android:id="@+id/bannerFailed"
+            android:layout_marginBottom="7dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/bannerClicked"
+            android:id="@+id/bannerClicked"
+            android:layout_marginBottom="7dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/bannerExpanded"
+            android:id="@+id/bannerExpanded"
+            android:layout_marginBottom="7dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/bannerCollapsed"
+            android:id="@+id/bannerCollapsedText" />
+    </LinearLayout>
 
 </LinearLayout>

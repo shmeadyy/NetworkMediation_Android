@@ -5,6 +5,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.graphics.Color;
+import android.widget.TextView;
 
 import com.mopub.mobileads.MoPubErrorCode;
 import com.mopub.mobileads.MoPubView;
@@ -61,27 +63,33 @@ public class BannerDetailFragment extends Fragment implements BannerAdListener {
     // BannerAdListener
     @Override
     public void onBannerLoaded(MoPubView banner) {
-        logToast(getActivity(), "Banner loaded.");
+        TextView txtView =  (TextView) getView().findViewById(R.id.bannerLoaded);
+        txtView.setTextColor(Color.GREEN);
     }
 
     @Override
     public void onBannerFailed(MoPubView banner, MoPubErrorCode errorCode) {
         final String errorMessage = (errorCode != null) ? errorCode.toString() : "";
+        TextView txtView =  (TextView) getView().findViewById(R.id.bannerFailed);
+        txtView.setTextColor(Color.GREEN);
         logToast(getActivity(), "Banner failed to load: " + errorMessage);
     }
 
     @Override
     public void onBannerClicked(MoPubView banner) {
-        logToast(getActivity(), "Banner clicked.");
+        TextView txtView =  (TextView) getView().findViewById(R.id.bannerClicked);
+        txtView.setTextColor(Color.GREEN);
     }
 
     @Override
     public void onBannerExpanded(MoPubView banner) {
-        logToast(getActivity(), "Banner expanded.");
+        TextView txtView =  (TextView) getView().findViewById(R.id.bannerExpanded);
+        txtView.setTextColor(Color.GREEN);
     }
 
     @Override
     public void onBannerCollapsed(MoPubView banner) {
-        logToast(getActivity(), "Banner collapsed.");
+        TextView txtView =  (TextView) getView().findViewById(R.id.bannerCollapsed);
+        txtView.setTextColor(Color.GREEN);
     }
 }

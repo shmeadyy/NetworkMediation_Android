@@ -95,7 +95,7 @@ public class MediationHomeFragment extends Fragment {
                             if (adUnitId.length() != 32){
                                 adUnitId = "b195f8dd8ded45fe847ad89ed1d016da";
                             }
-                            
+
                             final MoPubSampleAdUnit bannerAdUnit =
                                     new MoPubSampleAdUnit.Builder(adUnitId, MoPubSampleAdUnit.AdType.BANNER)
                                             .description("")
@@ -118,7 +118,7 @@ public class MediationHomeFragment extends Fragment {
                         try {
                             newFragment = InterstitialDetailFragment.class.newInstance();
                             if(adUnitId.length() != 32){
-                                adUnitId = "24534e1901884e398f1253216226017e";
+                                   adUnitId = "24534e1901884e398f1253216226017e";
                             }
                             final MoPubSampleAdUnit interstitialAdUnit =
                                     new MoPubSampleAdUnit.Builder(adUnitId, MoPubSampleAdUnit.AdType.INTERSTITIAL)
