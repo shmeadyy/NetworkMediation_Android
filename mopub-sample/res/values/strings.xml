@@ -47,4 +47,12 @@
     <string name="interstitialClicked">onInterstitialClicked</string>
     <string name="interstitialDismissed">onInterstitialDismissed</string>
 
+<!--Rewarded Video Detail Fragment Strings (in interstitial_detail_fragment)-->
+    <string name="rvLoadSuccess">onRewardedVideoLoadSuccess</string>
+    <string name="rvLoadFailure">onRewardedVideoLoadFailure</string>
+    <string name="rvStarted">onRewardedVideoStarted</string>
+    <string name="rvPlaybackError">onRewardedVideoPlaybackError</string>
+    <string name="rvClosed">onRewardedVideoClosed</string>
+    <string name="rvCompleted">onRewardedVideoCompleted</string>
+
 </resources>

@@ -74,7 +74,6 @@ public class MediationHomeFragment extends Fragment {
         final View mediationView = inflater.inflate(R.layout.fragment_mediation_home, container, false);
         adFormatRadioGroup = (RadioGroup) mediationView.findViewById(R.id.adFormatRadioGroup);
         adFormatRadioGroup.clearCheck();
-        Log.i("MOPUB", "Inside OnCreateView()");
         View.OnClickListener clickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
