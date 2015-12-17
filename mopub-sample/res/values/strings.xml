@@ -40,4 +40,11 @@
     <string name="bannerExpanded">onBannerExpanded</string>
     <string name="bannerCollapsed">onBannerCollapsed</string>
 
+<!--Interstitial Detail Fragment Strings-->
+    <string name="interstitialLoaded">onInterstitialLoaded</string>
+    <string name="interstitialFailed">onInterstitialFailed</string>
+    <string name="interstitialShown">onInterstitialShown</string>
+    <string name="interstitialClicked">onInterstitialClicked</string>
+    <string name="interstitialDismissed">onInterstitialDismissed</string>
+
 </resources>

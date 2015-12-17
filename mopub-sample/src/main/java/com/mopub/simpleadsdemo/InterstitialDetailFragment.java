@@ -1,11 +1,13 @@
 package com.mopub.simpleadsdemo;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.mopub.mobileads.MoPubErrorCode;
 import com.mopub.mobileads.MoPubInterstitial;
@@ -69,28 +71,34 @@ public class InterstitialDetailFragment extends Fragment implements Interstitial
     @Override
     public void onInterstitialLoaded(MoPubInterstitial interstitial) {
         mShowButton.setEnabled(true);
-        logToast(getActivity(), "Interstitial loaded.");
+        TextView txtView =  (TextView) getView().findViewById(R.id.interstitialLoaded);
+        txtView.setTextColor(Color.GREEN);
     }
 
     @Override
     public void onInterstitialFailed(MoPubInterstitial interstitial, MoPubErrorCode errorCode) {
         final String errorMessage = (errorCode != null) ? errorCode.toString() : "";
-        logToast(getActivity(), "Interstitial failed to load: " + errorMessage);
+        logToast(getActivity(), "Error Message: " + errorMessage);
+        TextView txtView =  (TextView) getView().findViewById(R.id.interstitialFailed);
+        txtView.setTextColor(Color.RED);
     }
 
     @Override
     public void onInterstitialShown(MoPubInterstitial interstitial) {
         mShowButton.setEnabled(false);
-        logToast(getActivity(), "Interstitial shown.");
+        TextView txtView =  (TextView) getView().findViewById(R.id.interstitialShown);
+        txtView.setTextColor(Color.GREEN);
     }
 
     @Override
     public void onInterstitialClicked(MoPubInterstitial interstitial) {
-        logToast(getActivity(), "Interstitial clicked.");
+        TextView txtView =  (TextView) getView().findViewById(R.id.interstitialClicked);
+        txtView.setTextColor(Color.GREEN);
     }
 
     @Override
     public void onInterstitialDismissed(MoPubInterstitial interstitial) {
-        logToast(getActivity(), "Interstitial dismissed.");
+        TextView txtView =  (TextView) getView().findViewById(R.id.interstitialDismissed);
+        txtView.setTextColor(Color.GREEN);
     }
 }

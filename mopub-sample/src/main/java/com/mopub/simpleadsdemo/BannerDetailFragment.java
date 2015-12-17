@@ -71,8 +71,7 @@ public class BannerDetailFragment extends Fragment implements BannerAdListener {
     public void onBannerFailed(MoPubView banner, MoPubErrorCode errorCode) {
         final String errorMessage = (errorCode != null) ? errorCode.toString() : "";
         TextView txtView =  (TextView) getView().findViewById(R.id.bannerFailed);
-        txtView.setTextColor(Color.GREEN);
-        logToast(getActivity(), "Banner failed to load: " + errorMessage);
+        txtView.setTextColor(Color.RED);
     }
 
     @Override
