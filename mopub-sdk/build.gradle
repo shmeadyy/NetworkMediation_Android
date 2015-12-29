@@ -9,7 +9,6 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:1.2.3'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.3'
-        classpath 'org.robolectric:robolectric-gradle-plugin:1.1.0'
     }
 }
 
@@ -25,9 +24,12 @@ repositories {
     }
 }
 
+configurations {
+    javadocDeps
+}
+
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
-apply plugin: 'org.robolectric'
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.5'
@@ -35,14 +37,15 @@ task wrapper(type: Wrapper) {
 
 group = 'com.mopub'
 description = '''MoPub Android SDK'''
-version = '3.12.0'
+version = '4.3.0'
 
 android {
     compileSdkVersion 22
     buildToolsVersion '22.0.1'
+    lintOptions { abortOnError false }
 
     defaultConfig {
-        versionCode 29
+        versionCode 34
         versionName version
         minSdkVersion 9
         targetSdkVersion 22
@@ -53,7 +56,7 @@ android {
         main {
             manifest.srcFile 'AndroidManifest.xml'
             java.srcDirs = ['src/main/java']
-            resources.srcDirs = ['src/main/java']
+            resources.srcDirs = ['src/main/resources']
             aidl.srcDirs = ['src/main']
             renderscript.srcDirs = ['src/main']
             res.srcDirs = ['res']
@@ -84,28 +87,37 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), file('proguard.txt')
         }
-
+      
         debug {
             minifyEnabled false
         }
     }
 
-    // Note: You will also need a local.properties file to set the location of the SDK in the same
+    // Note: You will also need a local.properties file to set the location of the SDK in the same 
     // way that the existing SDK requires, using the sdk.dir property.
-    // Alternatively, you can set an environment variable called ANDROID_HOME. There is no
+    // Alternatively, you can set an environment variable called ANDROID_HOME. There is no 
     // difference between the two methods, you can use the one you prefer.
 }
 
 
 dependencies {
-    compile 'com.android.support:support-v4:22.0.0'
-    compile 'com.android.support:support-annotations:22.0.0'
-    compile 'com.android.support:recyclerview-v7:22.0.0'
+    compile 'com.android.support:support-v4:22.2.0'
+    compile 'com.android.support:support-annotations:22.2.0'
+    compile 'com.android.support:recyclerview-v7:22.2.0'
     compile 'com.mopub.volley:mopub-volley:1.1.0'
+    compile 'com.google.android.exoplayer:exoplayer:r1.4.2'
     // anchor: additional dependencies
 
+    javadocDeps 'com.google.android.exoplayer:exoplayer:r1.4.2:sources'
+    javadocDeps 'com.mopub.volley:mopub-volley:1.1.0:sources'
+    javadocDeps 'com.android.support:support-v4:22.0.0:sources'
+    javadocDeps 'com.android.support:support-annotations:22.0.0:sources'
+    javadocDeps 'com.android.support:recyclerview-v7:22.0.0:sources'
+
     testCompile 'junit:junit:4.10'
-    testCompile 'org.robolectric:robolectric:2.4'
+    testCompile 'org.robolectric:robolectric:3.0'
+    testCompile 'org.robolectric:shadows-support-v4:3.0'
+    testCompile 'org.robolectric:shadows-httpclient:3.0'
     testCompile 'com.squareup:fest-android:1.0.7'
     testCompile 'org.mockito:mockito-core:1.9.5'
 }
@@ -203,6 +215,7 @@ task sourcesJar(type: Jar) {
 task javadoc(type: Javadoc) {
     source = android.sourceSets.main.java.srcDirs
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    classpath += configurations.javadocDeps
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {

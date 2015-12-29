@@ -7,8 +7,8 @@ import android.graphics.Point;
 import android.view.Display;
 import android.view.WindowManager;
 
-import com.mopub.common.HttpClient;
 import com.mopub.common.test.support.SdkTestRunner;
+import com.mopub.common.util.test.support.ShadowMoPubHttpUrlConnection;
 import com.mopub.mobileads.test.support.VastUtils;
 import com.mopub.network.MoPubRequestQueue;
 import com.mopub.network.Networking;
@@ -20,11 +20,12 @@ import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.robolectric.Robolectric;
-import org.robolectric.tester.org.apache.http.FakeHttpLayer;
+import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Semaphore;
 
 import static com.mopub.common.VolleyRequestMatcher.isUrl;
@@ -39,6 +40,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(SdkTestRunner.class)
+@Config(constants = BuildConfig.class, shadows = {ShadowMoPubHttpUrlConnection.class})
 public class VastXmlManagerAggregatorTest {
     static final String TEST_VAST_XML_STRING = "<VAST version='2.0'>" +
             "    <Ad id='empty'>" +
@@ -111,6 +113,15 @@ public class VastXmlManagerAggregatorTest {
             "                    </CompanionAds>" +
             "                </Creative>" +
             "            </Creatives>" +
+            "            <Extensions>" +
+            "                <Extension type=\"MoPub\">" +
+            "                    <MoPubViewabilityTracker" +
+            "                            viewablePlaytime=\"2.5\"" +
+            "                            percentViewable=\"50%\">" +
+            "                        <![CDATA[http://ad.server.com/impression/dot.gif]]>" +
+            "                    </MoPubViewabilityTracker>" +
+            "                </Extension>" +
+            "            </Extensions>" +
             "            <Error><![CDATA[http://wrapperErrorOne?errorcode=[ERRORCODE]]]></Error>" +
             "            <Error><![CDATA[http://wrapperErrorTwo?errorcode=[ERRORCODE]]]></Error>" +
             "        </Wrapper>" +
@@ -183,6 +194,48 @@ public class VastXmlManagerAggregatorTest {
             "                            <CompanionClickTracking><![CDATA[http://companionClickTracking1]]></CompanionClickTracking>" +
             "                            <CompanionClickTracking><![CDATA[http://companionClickTracking2]]></CompanionClickTracking>" +
             "                        </Companion>" +
+            "                        <Companion id=\"valid\" height=\"10000\" width=\"10000\">" +
+            "                            <HTMLResource>" +
+            "                                <![CDATA[" +
+            "                                    <link rel=\"stylesheet\" href=\"https://ton.twimg.com/exchange-media/staging/video_companions_style-29c86cb8e4193a6c4da8.css\">" +
+            "                                    <div class=\"tweet_wrapper\">" +
+            "                                    <div class=\"tweet\">" +
+            "                                    <img class=\"icon\" src=\"https://pbs.twimg.com/profile_images/641346383606235136/XLhN-zvk_reasonably_small.jpg\"/>" +
+            "                                    <span class=\"title\">Frappuccino</span>" +
+            "                                    <span id=\"tweet_text\" class=\"tweet-text\">" +
+            "                                    " +
+            "                                    The best use of your Frappuccino cup is to hold your Frappuccino. The second best is to hold your terrarium. \uD83C\uDF35☀️" +
+            "                                    </span>" +
+            "                                    </div>" +
+            "                                    </div>" +
+            "                                ]]>" +
+            "                            </HTMLResource>" +
+            "                            <TrackingEvents>" +
+            "                                <Tracking event=\"creativeView\">http://myTrackingURL/firstCompanionCreativeView</Tracking>" +
+            "                            </TrackingEvents>" +
+            "                            <CompanionClickThrough>http://frappucinoCompanion.com</CompanionClickThrough>" +
+            "                        </Companion>" +
+            "                        <Companion height=\"30\" width=\"65\" adSlotID=\"adsBy\">" +
+            "                            <HTMLResource>" +
+            "                                <![CDATA[" +
+            "                                    <link rel=\"stylesheet\" href=\"https://ton.twimg.com/exchange-media/staging/video_companions_style-29c86cb8e4193a6c4da8.css\">" +
+            "                                    <div class=\"ads-by-twitter\">" +
+            "                                    Ads by <div class=\"larry\"></div>" +
+            "                                    </div>" +
+            "                                ]]>" +
+            "                            </HTMLResource>" +
+            "                        </Companion>" +
+            "                        <Companion height=\"22\" width=\"130\" adSlotID=\"socialActions\">" +
+            "                            <HTMLResource>" +
+            "                                <![CDATA[" +
+            "                                    <link rel=\"stylesheet\" href=\"https://ton.twimg.com/exchange-media/staging/video_companions_style-29c86cb8e4193a6c4da8.css\">" +
+            "                                    <div class=\"social-actions\">" +
+            "                                    <a href=\"mopubshare://tweet?screen_name=frappuccino&tweet_id=590877845037056000\" class=\"retweet-button\"><div class=\"icon\"></div>310&nbsp;</a>" +
+            "                                    <a href=\"twitter://intent/favorite?id=590877845037056000\" class=\"like-button\"><div class=\"icon\"></div>1118&nbsp;</a>" +
+            "                                    </div>" +
+            "                                ]]>" +
+            "                            </HTMLResource>" +
+            "                        </Companion>" +
             "                    </CompanionAds>" +
             "                </Creative>" +
             "            </Creatives>" +
@@ -215,6 +268,15 @@ public class VastXmlManagerAggregatorTest {
             "                    </Linear>" +
             "                </Creative>" +
             "            </Creatives>" +
+            "            <Extensions>" +
+            "                <Extension type=\"MoPub\">" +
+            "                    <MoPubViewabilityTracker" +
+            "                            viewablePlaytime=\"3.5\"" +
+            "                            percentViewable=\"70%\">" +
+            "                        <![CDATA[http://ad.server.com/impression/dot.png]]>" +
+            "                    </MoPubViewabilityTracker>" +
+            "                </Extension>" +
+            "            </Extensions>" +
             "        </InLine>" +
             "    </Ad>" +
             "</VAST>";
@@ -267,7 +329,6 @@ public class VastXmlManagerAggregatorTest {
             "</VAST>";
 
     private Activity context;
-    private FakeHttpLayer mFakeHttpLayer;
     private Semaphore semaphore;
     private VastXmlManagerAggregatorListener vastXmlManagerAggregatorListener;
     private VastXmlManagerAggregator subject;
@@ -279,7 +340,6 @@ public class VastXmlManagerAggregatorTest {
     @Before
     public void setup() {
         context = Robolectric.buildActivity(Activity.class).create().get();
-        mFakeHttpLayer = Robolectric.getFakeHttpLayer();
 
         Networking.setRequestQueueForTesting(mockRequestQueue);
 
@@ -309,10 +369,10 @@ public class VastXmlManagerAggregatorTest {
 
     @Test
     public void doInBackground_shouldNotFollowRedirectsOnceTheLimitHasBeenReached() throws Exception {
-        for(int i = 0; i < VastXmlManagerAggregator.MAX_TIMES_TO_FOLLOW_VAST_REDIRECT; i++) {
-            mFakeHttpLayer.addPendingHttpResponse(200, TEST_VAST_XML_STRING);
+        for (int i = 0; i < VastXmlManagerAggregator.MAX_TIMES_TO_FOLLOW_VAST_REDIRECT; i++) {
+            ShadowMoPubHttpUrlConnection.addPendingResponse(200, TEST_VAST_XML_STRING);
         }
-        mFakeHttpLayer.addPendingHttpResponse(200, TEST_NESTED_VAST_XML_STRING);
+        ShadowMoPubHttpUrlConnection.addPendingResponse(200, TEST_NESTED_VAST_XML_STRING);
 
         subject.execute(TEST_VAST_XML_STRING);
         semaphore.acquire();
@@ -322,10 +382,10 @@ public class VastXmlManagerAggregatorTest {
 
     @Test
     public void doInBackground_shouldFollowMaxRedirectsMinusOne() throws Exception {
-        for(int i = 0; i < VastXmlManagerAggregator.MAX_TIMES_TO_FOLLOW_VAST_REDIRECT - 1; i++) {
-            mFakeHttpLayer.addPendingHttpResponse(200, TEST_VAST_XML_STRING);
+        for (int i = 0; i < VastXmlManagerAggregator.MAX_TIMES_TO_FOLLOW_VAST_REDIRECT - 1; i++) {
+            ShadowMoPubHttpUrlConnection.addPendingResponse(200, TEST_VAST_XML_STRING);
         }
-        mFakeHttpLayer.addPendingHttpResponse(200, TEST_NESTED_VAST_XML_STRING);
+        ShadowMoPubHttpUrlConnection.addPendingResponse(200, TEST_NESTED_VAST_XML_STRING);
 
         subject.execute(TEST_VAST_XML_STRING);
         semaphore.acquire();
@@ -496,7 +556,7 @@ public class VastXmlManagerAggregatorTest {
     @Test
     public void getBestCompanionAd_shouldReturnCompanionAd() throws Exception {
         final VastCompanionAdXmlManager companionXmlManager = initializeCompanionXmlManagerMock(
-                300, 250, "image_url", "image/jpeg", null, null);
+                300, 250, "image_url", "image/jpeg", null, null, null);
 
         final VastCompanionAdConfig bestCompanionAd =
                 subject.getBestCompanionAd(Arrays.asList(companionXmlManager),
@@ -507,7 +567,7 @@ public class VastXmlManagerAggregatorTest {
     @Test
     public void getBestCompanionAd_withInvalidVastResource_shouldReturnNull() throws Exception {
         final VastCompanionAdXmlManager companionXmlManager = initializeCompanionXmlManagerMock(
-                300, 250, "image_url", "image/INVALID", null, null);
+                300, 250, "image_url", "image/INVALID", null, null, null);
 
         final VastCompanionAdConfig bestCompanionAd =
                 subject.getBestCompanionAd(Arrays.asList(companionXmlManager),
@@ -518,7 +578,7 @@ public class VastXmlManagerAggregatorTest {
     @Test
     public void getBestCompanionAd_withNullDimension_shouldReturnNull() throws Exception {
         final VastCompanionAdXmlManager companionXmlManager =
-                initializeCompanionXmlManagerMock(null, 250, "image_url", "image/png", null, null);
+                initializeCompanionXmlManagerMock(null, 250, "image_url", "image/png", null, null, null);
 
         final VastCompanionAdConfig bestCompanionAd = subject.getBestCompanionAd(
                 Arrays.asList(companionXmlManager),
@@ -529,7 +589,7 @@ public class VastXmlManagerAggregatorTest {
     @Test
     public void getBestCompanionAd_withWidthTooSmall_shouldReturnNull() throws Exception {
         final VastCompanionAdXmlManager companionXmlManager =
-                initializeCompanionXmlManagerMock(299, 250, "image_url", "image/png", null, null);
+                initializeCompanionXmlManagerMock(299, 250, "image_url", "image/png", null, null, null);
 
         final VastCompanionAdConfig bestCompanionAd = subject.getBestCompanionAd(
                 Arrays.asList(companionXmlManager),
@@ -540,7 +600,7 @@ public class VastXmlManagerAggregatorTest {
     @Test
     public void getBestCompanionAd_withHeightTooSmall_shouldReturnNull() throws Exception {
         final VastCompanionAdXmlManager companionXmlManager =
-                initializeCompanionXmlManagerMock(300, 249, "image_url", "image/png", null, null);
+                initializeCompanionXmlManagerMock(300, 249, "image_url", "image/png", null, null, null);
 
         final VastCompanionAdConfig bestCompanionAd = subject.getBestCompanionAd(
                 Arrays.asList(companionXmlManager),
@@ -557,10 +617,10 @@ public class VastXmlManagerAggregatorTest {
 
         // Triple screen size
         final VastCompanionAdXmlManager companionXmlManager1 =
-                initializeCompanionXmlManagerMock(2400, 1440, "image_url1", "image/png", null, null);
+                initializeCompanionXmlManagerMock(2400, 1440, "image_url1", "image/png", null, null, null);
         // Double screen size
         final VastCompanionAdXmlManager companionXmlManager2 =
-                initializeCompanionXmlManagerMock(1600, 960, "image_url2", "image/bmp", null, null);
+                initializeCompanionXmlManagerMock(1600, 960, "image_url2", "image/bmp", null, null, null);
 
         VastCompanionAdConfig bestCompanionAd = subject.getBestCompanionAd(
                 Arrays.asList(companionXmlManager1, companionXmlManager2),
@@ -577,10 +637,10 @@ public class VastXmlManagerAggregatorTest {
 
         // Triple screen size
         final VastCompanionAdXmlManager companionXmlManager1 =
-                initializeCompanionXmlManagerMock(2400, 1440, "image_url1", "image/png", null, null);
+                initializeCompanionXmlManagerMock(2400, 1440, "image_url1", "image/png", null, null, null);
         // Half screen size
         final VastCompanionAdXmlManager companionXmlManager2 =
-                initializeCompanionXmlManagerMock(400, 250, "image_url2", "image/bmp", null, null);
+                initializeCompanionXmlManagerMock(400, 250, "image_url2", "image/bmp", null, null, null);
 
         VastCompanionAdConfig bestCompanionAd = subject.getBestCompanionAd(
                 Arrays.asList(companionXmlManager1, companionXmlManager2),
@@ -597,10 +657,10 @@ public class VastXmlManagerAggregatorTest {
 
         // Landscape
         final VastCompanionAdXmlManager companionXmlManager1 =
-                initializeCompanionXmlManagerMock(400, 250, "image_url1", "image/png", null, null);
+                initializeCompanionXmlManagerMock(400, 250, "image_url1", "image/png", null, null, null);
         // Portrait
         final VastCompanionAdXmlManager companionXmlManager2 =
-                initializeCompanionXmlManagerMock(250, 400, "image_url2", "image/bmp", null, null);
+                initializeCompanionXmlManagerMock(250, 400, "image_url2", "image/bmp", null, null, null);
 
         VastCompanionAdConfig bestCompanionAd = subject.getBestCompanionAd(
                 Arrays.asList(companionXmlManager1, companionXmlManager2),
@@ -617,10 +677,10 @@ public class VastXmlManagerAggregatorTest {
 
         // Landscape
         final VastCompanionAdXmlManager companionXmlManager1 =
-                initializeCompanionXmlManagerMock(400, 300, "image_url1", "image/png", null, null);
+                initializeCompanionXmlManagerMock(400, 300, "image_url1", "image/png", null, null, null);
         // Portrait
         final VastCompanionAdXmlManager companionXmlManager2 =
-                initializeCompanionXmlManagerMock(300, 400, "image_url2", "image/bmp", null, null);
+                initializeCompanionXmlManagerMock(300, 400, "image_url2", "image/bmp", null, null, null);
 
         VastCompanionAdConfig bestCompanionAd = subject.getBestCompanionAd(
                 Arrays.asList(companionXmlManager1, companionXmlManager2),
@@ -633,13 +693,13 @@ public class VastXmlManagerAggregatorTest {
         // Static Resource
         final VastCompanionAdXmlManager companionXmlManager1 =
                 initializeCompanionXmlManagerMock(400, 250, "StaticResource", "image/png", null,
-                        null);
+                        null, null);
         // HTML Resource
         final VastCompanionAdXmlManager companionXmlManager2 =
-                initializeCompanionXmlManagerMock(250, 400, null, null, null, "HTMLResource");
+                initializeCompanionXmlManagerMock(250, 400, null, null, null, "HTMLResource", null);
         // IFrame Resource
         final VastCompanionAdXmlManager companionXmlManager3 =
-                initializeCompanionXmlManagerMock(250, 400, null, null, "IFrameResource", null);
+                initializeCompanionXmlManagerMock(250, 400, null, null, "IFrameResource", null, null);
 
         VastCompanionAdConfig bestCompanionAd = subject.getBestCompanionAd(
                 Arrays.asList(companionXmlManager3, companionXmlManager2, companionXmlManager1),
@@ -651,10 +711,10 @@ public class VastXmlManagerAggregatorTest {
     public void getBestCompanionAd_withHTMLAndStaticResourceTypes_shouldReturnStaticResourceType() throws Exception {
         // Static Resource
         final VastCompanionAdXmlManager companionXmlManager1 =
-                initializeCompanionXmlManagerMock(400, 250, "StaticResource", "image/png", null, null);
+                initializeCompanionXmlManagerMock(400, 250, "StaticResource", "image/png", null, null, null);
         // HTML Resource
         final VastCompanionAdXmlManager companionXmlManager2 =
-                initializeCompanionXmlManagerMock(250, 400, null, null, null, "HTMLResource");
+                initializeCompanionXmlManagerMock(250, 400, null, null, null, "HTMLResource", null);
 
         VastCompanionAdConfig bestCompanionAd = subject.getBestCompanionAd(
                 Arrays.asList(companionXmlManager2, companionXmlManager1),
@@ -666,9 +726,9 @@ public class VastXmlManagerAggregatorTest {
     public void getBestCompanionAd_withInvalidStaticResource_withValidHtmlResource_shouldReturnHtmlResource() throws Exception {
         final VastCompanionAdXmlManager companionXmlManager1 =
                 initializeCompanionXmlManagerMock(400, 250, "StaticResource", "INVALID",
-                        "IFrameResource", null);
+                        "IFrameResource", null, null);
         final VastCompanionAdXmlManager companionXmlManager2 =
-                initializeCompanionXmlManagerMock(300, 400, null, null, null, "HTMLResource");
+                initializeCompanionXmlManagerMock(300, 400, null, null, null, "HTMLResource", null);
 
         VastCompanionAdConfig bestCompanionAd = subject.getBestCompanionAd(
                 Arrays.asList(companionXmlManager2, companionXmlManager1),
@@ -686,9 +746,9 @@ public class VastXmlManagerAggregatorTest {
         // 305 x 305 is both fewer pixels (screen area) and a worse aspect ratio. It still should be
         // chosen because 240 is not wide enough to be considered for a companion ad
         final VastCompanionAdXmlManager companionXmlManager1 =
-                initializeCompanionXmlManagerMock(305, 305, "image_url1", "image/png", null, null);
+                initializeCompanionXmlManagerMock(305, 305, "image_url1", "image/png", null, null, null);
         final VastCompanionAdXmlManager companionXmlManager2 =
-                initializeCompanionXmlManagerMock(240, 400, "image_url2", "image/bmp", null, null);
+                initializeCompanionXmlManagerMock(240, 400, "image_url2", "image/bmp", null, null, null);
 
         VastCompanionAdConfig bestCompanionAd = subject.getBestCompanionAd(
                 Arrays.asList(companionXmlManager1, companionXmlManager2),
@@ -697,73 +757,493 @@ public class VastXmlManagerAggregatorTest {
     }
 
     @Test
-    public void getScaledDimensions_withWidthLargerThanScreen_shouldScaleWidthAndHeight() throws Exception {
-        // Default screen width is 480, height is 800
-        final Display display = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-        assertThat(display.getWidth()).isEqualTo(480);
-        assertThat(display.getHeight()).isEqualTo(800);
+    public void getSocialActionsCompanionAds_shouldReturnSocialActionsCompanionAds() throws Exception {
+        final VastCompanionAdXmlManager adsByXmlManager =
+                initializeCompanionXmlManagerMock(65, 20, null, "HTMLResource", null,
+                        "<p>Ads by</p>", "adsBy");
+        final VastCompanionAdXmlManager socialActionsXmlManager =
+                initializeCompanionXmlManagerMock(130, 30, null, "HTMLResource", null,
+                        "<p>Retweet Like</p>", "socialActions");
 
-        // Width and height are evaluated in landscape
-        Point point = subject.getScaledDimensions(1600, 400);
+        final Map<String, VastCompanionAdConfig> socialActionsCompanionAds =
+                subject.getSocialActionsCompanionAds(
+                        Arrays.asList(adsByXmlManager, socialActionsXmlManager));
+        final VastCompanionAdConfig adsByVastConfig = socialActionsCompanionAds.get("adsBy");
+        final VastCompanionAdConfig socialActionsVastConfig = socialActionsCompanionAds
+                .get("socialActions");
 
-        assertThat(point.x).isEqualTo(800 - VastVideoViewController.WEBVIEW_PADDING);
-        assertThat(point.y).isEqualTo(200 - VastVideoViewController.WEBVIEW_PADDING);
+        assertThat(adsByVastConfig.getWidth()).isEqualTo(65);
+        assertThat(adsByVastConfig.getHeight()).isEqualTo(20);
+        assertThat(adsByVastConfig.getVastResource().getResource()).isEqualTo("<p>Ads by</p>");
+        assertThat(socialActionsVastConfig.getWidth()).isEqualTo(130);
+        assertThat(socialActionsVastConfig.getHeight()).isEqualTo(30);
+        assertThat(socialActionsVastConfig.getVastResource().getResource())
+                .isEqualTo("<p>Retweet Like</p>");
     }
 
     @Test
-    public void getScaledDimensions_withHeightLargerThanScreen_shouldScaleWidthAndHeight() throws Exception {
-        // Default screen width is 480, height is 800
-        final Display display = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-        assertThat(display.getWidth()).isEqualTo(480);
-        assertThat(display.getHeight()).isEqualTo(800);
+    public void getSocialActionsCompanionAds_withoutSocialActions_shouldNotReturnSocialActionsCompanionAds() throws Exception {
+        final VastCompanionAdXmlManager adsByXmlManager =
+                initializeCompanionXmlManagerMock(65, 20, null, "HTMLResource", null,
+                        "<p>Ads by</p>", "NOTadsBy");
+        final VastCompanionAdXmlManager socialActionsXmlManager =
+                initializeCompanionXmlManagerMock(130, 30, null, "HTMLResource", null,
+                        "<p>Retweet Like</p>", "NOTsocialActions");
 
-        // Width and height are evaluated in landscape
-        Point point = subject.getScaledDimensions(400, 960);
+        final Map<String, VastCompanionAdConfig> socialActionsCompanionAds =
+                subject.getSocialActionsCompanionAds(
+                        Arrays.asList(adsByXmlManager, socialActionsXmlManager));
 
-        assertThat(point.x).isEqualTo(200 - VastVideoViewController.WEBVIEW_PADDING);
-        assertThat(point.y).isEqualTo(480 - VastVideoViewController.WEBVIEW_PADDING);
+        assertThat(socialActionsCompanionAds.size()).isEqualTo(0);
     }
 
     @Test
-    public void getScaledDimensions_withWidthAndHeightSmallerThanScreen_shouldNotScaleWidthAndHeight() throws Exception {
-        // Default screen width is 480, height is 800
-        final Display display = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-        assertThat(display.getWidth()).isEqualTo(480);
-        assertThat(display.getHeight()).isEqualTo(800);
+    public void getSocialActionsCompanionAds_withoutHTMLResource_shouldNotReturnSocialActionsCompanionAds() throws Exception {
+        final VastCompanionAdXmlManager adsByXmlManager =
+                initializeCompanionXmlManagerMock(65, 20, null, "HTMLResource", null, null,
+                        "adsBy");
+        final VastCompanionAdXmlManager socialActionsXmlManager =
+                initializeCompanionXmlManagerMock(130, 30, null, "HTMLResource", null,
+                        null, "socialActions");
 
-        // Width and height are evaluated in landscape
-        Point point = subject.getScaledDimensions(800, 480);
+        final Map<String, VastCompanionAdConfig> socialActionsCompanionAds =
+                subject.getSocialActionsCompanionAds(
+                        Arrays.asList(adsByXmlManager, socialActionsXmlManager));
+        final VastCompanionAdConfig adsByVastConfig = socialActionsCompanionAds.get("adsBy");
+        final VastCompanionAdConfig socialActionsVastConfig = socialActionsCompanionAds
+                .get("socialActions");
 
-        assertThat(point.x).isEqualTo(800);
-        assertThat(point.y).isEqualTo(480);
+        assertThat(socialActionsCompanionAds.size()).isEqualTo(0);
     }
 
     @Test
-    public void getScaledDimensions_withWidthAdjustedToLessThanZero_shouldNotScaleWidthAndHeight() throws Exception {
-        // Default screen width is 480, height is 800
-        final Display display = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-        assertThat(display.getWidth()).isEqualTo(480);
-        assertThat(display.getHeight()).isEqualTo(800);
+    public void getSocialActionsCompanionAds_whenTooWide_shouldNotReturnSocialActionsCompanionAds() throws Exception {
+        final VastCompanionAdXmlManager adsByXmlManager =
+                initializeCompanionXmlManagerMock(76, 20, null, "HTMLResource", null,
+                        "<p>Ads by</p>", "adsBy");
+        final VastCompanionAdXmlManager socialActionsXmlManager =
+                initializeCompanionXmlManagerMock(151, 30, null, "HTMLResource", null,
+                        "<p>Retweet Like</p>", "socialActions");
 
-        // Width and height are evaluated in landscape
-        Point point = subject.getScaledDimensions(1600, 2);
+        final Map<String, VastCompanionAdConfig> socialActionsCompanionAds =
+                subject.getSocialActionsCompanionAds(
+                        Arrays.asList(adsByXmlManager, socialActionsXmlManager));
 
-        assertThat(point.x).isEqualTo(1600);
-        assertThat(point.y).isEqualTo(2);
+        assertThat(socialActionsCompanionAds.size()).isEqualTo(0);
     }
 
     @Test
-    public void getScaledDimensions_withHeightAdjustedToLessThanZero_shouldNotScaleWidthAndHeight() throws Exception {
+    public void getSocialActionsCompanionAds_whenTooTall_shouldNotReturnSocialActionsCompanionAds() throws Exception {
+        final VastCompanionAdXmlManager adsByXmlManager =
+                initializeCompanionXmlManagerMock(65, 51, null, "HTMLResource", null,
+                        "<p>Ads by</p>", "adsBy");
+        final VastCompanionAdXmlManager socialActionsXmlManager =
+                initializeCompanionXmlManagerMock(130, 51, null, "HTMLResource", null,
+                        "<p>Retweet Like</p>", "socialActions");
+
+        final Map<String, VastCompanionAdConfig> socialActionsCompanionAds =
+                subject.getSocialActionsCompanionAds(
+                        Arrays.asList(adsByXmlManager, socialActionsXmlManager));
+
+        assertThat(socialActionsCompanionAds.size()).isEqualTo(0);
+    }
+
+    @Test
+    public void evaluateVastXmlManager_withSocialActions_shouldKeepSocialActionsFromInLineAndNotOverwriteFromWrapper() throws Exception {
+        ShadowMoPubHttpUrlConnection.addPendingResponse(200, TEST_NESTED_VAST_XML_STRING);
+        VastVideoConfig vastVideoConfig = subject.evaluateVastXmlManager(
+                TEST_VAST_XML_STRING, new ArrayList<VastTracker>());
+
+        VastCompanionAdConfig adsByCompanionAd = vastVideoConfig.getSocialActionsCompanionAds()
+                .get(VastXmlManagerAggregator.ADS_BY_AD_SLOT_ID);
+        assertThat(adsByCompanionAd.getVastResource().getType())
+                .isEqualTo(VastResource.Type.HTML_RESOURCE);
+        assertThat(adsByCompanionAd.getVastResource().getResource().trim())
+                .isEqualTo(
+                        "<link rel=\"stylesheet\" href=\"https://ton.twimg.com/exchange-media/staging/video_companions_style-29c86cb8e4193a6c4da8.css\">" +
+                                "                                    <div class=\"ads-by-twitter\">" +
+                                "                                    Ads by <div class=\"larry\"></div>" +
+                                "                                    </div>");
+        VastCompanionAdConfig socialActionsCompanionAd = vastVideoConfig
+                .getSocialActionsCompanionAds()
+                .get(VastXmlManagerAggregator.SOCIAL_ACTIONS_AD_SLOT_ID);
+        assertThat(socialActionsCompanionAd.getVastResource()
+                .getType()).isEqualTo(VastResource.Type.HTML_RESOURCE);
+        assertThat(socialActionsCompanionAd.getVastResource().getResource().trim())
+        .isEqualTo("<link rel=\"stylesheet\" href=\"https://ton.twimg.com/exchange-media/staging/video_companions_style-29c86cb8e4193a6c4da8.css\">" +
+                "                                    <div class=\"social-actions\">" +
+                "                                    <a href=\"mopubshare://tweet?screen_name=frappuccino&tweet_id=590877845037056000\" class=\"retweet-button\"><div class=\"icon\"></div>310&nbsp;</a>" +
+                "                                    <a href=\"twitter://intent/favorite?id=590877845037056000\" class=\"like-button\"><div class=\"icon\"></div>1118&nbsp;</a>" +
+                "                                    </div>");
+    }
+
+    @Test
+    public void
+    getScaledDimensions_withStaticResource_withWidthLargerThanScreen_shouldScaleWidthAndHeight() throws Exception {
         // Default screen width is 480, height is 800
         final Display display = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
         assertThat(display.getWidth()).isEqualTo(480);
         assertThat(display.getHeight()).isEqualTo(800);
 
         // Width and height are evaluated in landscape
-        Point point = subject.getScaledDimensions(2, 960);
+        Point landscapePoint = subject.getScaledDimensions(1600, 400,
+                VastResource.Type.STATIC_RESOURCE,
+                VastXmlManagerAggregator.CompanionOrientation.LANDSCAPE);
+        assertThat(landscapePoint.x).isEqualTo(800 - VastVideoViewController.WEBVIEW_PADDING);
+        assertThat(landscapePoint.y).isEqualTo(200 - VastVideoViewController.WEBVIEW_PADDING);
 
-        assertThat(point.x).isEqualTo(2);
-        assertThat(point.y).isEqualTo(960);
+        // Width and height are evaluated in portrait
+        Point portraitPoint = subject.getScaledDimensions(960, 600,
+                VastResource.Type.STATIC_RESOURCE,
+                VastXmlManagerAggregator.CompanionOrientation.PORTRAIT);
+        assertThat(portraitPoint.x).isEqualTo(480 - VastVideoViewController.WEBVIEW_PADDING);
+        assertThat(portraitPoint.y).isEqualTo(300 - VastVideoViewController.WEBVIEW_PADDING);
+    }
+
+    @Test
+    public void getScaledDimensions_withStaticResource_withHeightLargerThanScreen_shouldScaleWidthAndHeight() throws Exception {
+        // Default screen width is 480, height is 800
+        final Display display = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        assertThat(display.getWidth()).isEqualTo(480);
+        assertThat(display.getHeight()).isEqualTo(800);
+
+        // Width and height are evaluated in landscape
+        Point landscapePoint = subject.getScaledDimensions(400, 960,
+                VastResource.Type.STATIC_RESOURCE,
+                VastXmlManagerAggregator.CompanionOrientation.LANDSCAPE);
+        assertThat(landscapePoint.x).isEqualTo(200 - VastVideoViewController.WEBVIEW_PADDING);
+        assertThat(landscapePoint.y).isEqualTo(480 - VastVideoViewController.WEBVIEW_PADDING);
+
+        // Width and height are evaluated in portrait
+        Point portraitPoint = subject.getScaledDimensions(400, 1600,
+                VastResource.Type.STATIC_RESOURCE,
+                VastXmlManagerAggregator.CompanionOrientation.PORTRAIT);
+        assertThat(portraitPoint.x).isEqualTo(200 - VastVideoViewController.WEBVIEW_PADDING);
+        assertThat(portraitPoint.y).isEqualTo(800 - VastVideoViewController.WEBVIEW_PADDING);
+    }
+
+    @Test
+    public void getScaledDimensions_withStaticResource_withWidthAndHeightEqualToScreen_shouldNotScaleWidthAndHeight() throws Exception {
+        // Default screen width is 480, height is 800
+        final Display display = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        assertThat(display.getWidth()).isEqualTo(480);
+        assertThat(display.getHeight()).isEqualTo(800);
+
+        // Width and height are evaluated in landscape
+        Point landscapePoint = subject.getScaledDimensions(
+                800 - VastVideoViewController.WEBVIEW_PADDING,
+                480 - VastVideoViewController.WEBVIEW_PADDING,
+                VastResource.Type.STATIC_RESOURCE,
+                VastXmlManagerAggregator.CompanionOrientation.LANDSCAPE);
+        assertThat(landscapePoint.x).isEqualTo(800 - VastVideoViewController.WEBVIEW_PADDING);
+        assertThat(landscapePoint.y).isEqualTo(480 - VastVideoViewController.WEBVIEW_PADDING);
+
+        // Width and height are evaluated in portrait
+        Point portraitPoint = subject.getScaledDimensions(
+                480 - VastVideoViewController.WEBVIEW_PADDING,
+                800 - VastVideoViewController.WEBVIEW_PADDING,
+                VastResource.Type.STATIC_RESOURCE,
+                VastXmlManagerAggregator.CompanionOrientation.PORTRAIT);
+        assertThat(portraitPoint.x).isEqualTo(480 - VastVideoViewController.WEBVIEW_PADDING);
+        assertThat(portraitPoint.y).isEqualTo(800 - VastVideoViewController.WEBVIEW_PADDING);
+    }
+
+    @Test
+    public void getScaledDimensions_withStaticResource_withWidthAdjustedToLessThanZero_shouldNotScaleWidthAndHeight() throws Exception {
+        // Default screen width is 480, height is 800
+        final Display display = ((WindowManager) context.getSystemService(
+                Context.WINDOW_SERVICE)).getDefaultDisplay();
+        assertThat(display.getWidth()).isEqualTo(480);
+        assertThat(display.getHeight()).isEqualTo(800);
+
+        // Width and height are evaluated in landscape
+        Point landscapePoint = subject.getScaledDimensions(1600, 2,
+                VastResource.Type.STATIC_RESOURCE,
+                VastXmlManagerAggregator.CompanionOrientation.LANDSCAPE);
+        assertThat(landscapePoint.x).isEqualTo(1600);
+        assertThat(landscapePoint.y).isEqualTo(2);
+
+        // Width and height are evaluated in portrait
+        Point portraitPoint = subject.getScaledDimensions(1600, 2,
+                VastResource.Type.STATIC_RESOURCE,
+                VastXmlManagerAggregator.CompanionOrientation.PORTRAIT);
+        assertThat(portraitPoint.x).isEqualTo(1600);
+        assertThat(portraitPoint.y).isEqualTo(2);
+    }
+
+    @Test
+    public void getScaledDimensions_withStaticResource_withHeightAdjustedToLessThanZero_shouldNotScaleWidthAndHeight() throws Exception {
+        // Default screen width is 480, height is 800
+        final Display display = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        assertThat(display.getWidth()).isEqualTo(480);
+        assertThat(display.getHeight()).isEqualTo(800);
+
+        // Width and height are evaluated in landscape
+        Point landscapePoint = subject.getScaledDimensions(2, 960,
+                VastResource.Type.STATIC_RESOURCE,
+                VastXmlManagerAggregator.CompanionOrientation.LANDSCAPE);
+        assertThat(landscapePoint.x).isEqualTo(2);
+        assertThat(landscapePoint.y).isEqualTo(960);
+
+        // Width and height are evaluated in portrait
+        Point portraitPoint = subject.getScaledDimensions(2, 960,
+                VastResource.Type.STATIC_RESOURCE,
+                VastXmlManagerAggregator.CompanionOrientation.PORTRAIT);
+        assertThat(portraitPoint.x).isEqualTo(2);
+        assertThat(portraitPoint.y).isEqualTo(960);
+    }
+
+    @Test
+    public void getScaledDimensions_withHTMLResource_withWidthLargerThanScreen_shouldScaleWidthAndHeight()
+            throws Exception {
+        // Default screen width is 480, height is 800
+        final Display display = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        assertThat(display.getWidth()).isEqualTo(480);
+        assertThat(display.getHeight()).isEqualTo(800);
+
+        // Width and height are evaluated in landscape
+        Point landscapePoint = subject.getScaledDimensions(1600, 400,
+                VastResource.Type.HTML_RESOURCE,
+                VastXmlManagerAggregator.CompanionOrientation.LANDSCAPE);
+        assertThat(landscapePoint.x).isEqualTo(800 - VastVideoViewController.WEBVIEW_PADDING);
+        assertThat(landscapePoint.y).isEqualTo(400 - VastVideoViewController.WEBVIEW_PADDING);
+
+        // Width and height are evaluated in portrait
+        Point portraitPoint = subject.getScaledDimensions(960, 600,
+                VastResource.Type.HTML_RESOURCE,
+                VastXmlManagerAggregator.CompanionOrientation.PORTRAIT);
+        assertThat(portraitPoint.x).isEqualTo(480 - VastVideoViewController.WEBVIEW_PADDING);
+        assertThat(portraitPoint.y).isEqualTo(600 - VastVideoViewController.WEBVIEW_PADDING);
+    }
+
+    @Test
+    public void getScaledDimensions_withHTMLResource_withHeightLargerThanScreen_shouldScaleWidthAndHeight() throws Exception {
+        // Default screen width is 480, height is 800
+        final Display display = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        assertThat(display.getWidth()).isEqualTo(480);
+        assertThat(display.getHeight()).isEqualTo(800);
+
+        // Width and height are evaluated in landscape
+        Point landscapePoint = subject.getScaledDimensions(400, 960,
+                VastResource.Type.HTML_RESOURCE,
+                VastXmlManagerAggregator.CompanionOrientation.LANDSCAPE);
+        assertThat(landscapePoint.x).isEqualTo(400 - VastVideoViewController.WEBVIEW_PADDING);
+        assertThat(landscapePoint.y).isEqualTo(480 - VastVideoViewController.WEBVIEW_PADDING);
+
+        // Width and height are evaluated in portrait
+        Point portraitPoint = subject.getScaledDimensions(400, 1600,
+                VastResource.Type.HTML_RESOURCE,
+                VastXmlManagerAggregator.CompanionOrientation.PORTRAIT);
+        assertThat(portraitPoint.x).isEqualTo(400 - VastVideoViewController.WEBVIEW_PADDING);
+        assertThat(portraitPoint.y).isEqualTo(800 - VastVideoViewController.WEBVIEW_PADDING);
+    }
+
+    @Test
+    public void getScaledDimensions_withHTMLResource_withWidthAdjustedToLessThanZero_shouldNotScaleWidthAndHeight() throws Exception {
+        // Default screen width is 480, height is 800
+        final Display display = ((WindowManager) context.getSystemService(
+                Context.WINDOW_SERVICE)).getDefaultDisplay();
+        assertThat(display.getWidth()).isEqualTo(480);
+        assertThat(display.getHeight()).isEqualTo(800);
+
+        // Width and height are evaluated in landscape
+        Point landscapePoint = subject.getScaledDimensions(1600, 2,
+                VastResource.Type.HTML_RESOURCE,
+                VastXmlManagerAggregator.CompanionOrientation.LANDSCAPE);
+        assertThat(landscapePoint.x).isEqualTo(1600);
+        assertThat(landscapePoint.y).isEqualTo(2);
+
+        // Width and height are evaluated in portrait
+        Point portraitPoint = subject.getScaledDimensions(1600, 2,
+                VastResource.Type.HTML_RESOURCE,
+                VastXmlManagerAggregator.CompanionOrientation.PORTRAIT);
+        assertThat(portraitPoint.x).isEqualTo(1600);
+        assertThat(portraitPoint.y).isEqualTo(2);
+    }
+
+    @Test
+    public void getScaledDimensions_withHTMLResource_withHeightAdjustedToLessThanZero_shouldNotScaleWidthAndHeight() throws Exception {
+        // Default screen width is 480, height is 800
+        final Display display = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        assertThat(display.getWidth()).isEqualTo(480);
+        assertThat(display.getHeight()).isEqualTo(800);
+
+        // Width and height are evaluated in landscape
+        Point landscapePoint = subject.getScaledDimensions(2, 960,
+                VastResource.Type.HTML_RESOURCE,
+                VastXmlManagerAggregator.CompanionOrientation.LANDSCAPE);
+        assertThat(landscapePoint.x).isEqualTo(2);
+        assertThat(landscapePoint.y).isEqualTo(960);
+
+        // Width and height are evaluated in portrait
+        Point portraitPoint = subject.getScaledDimensions(2, 960,
+                VastResource.Type.HTML_RESOURCE,
+                VastXmlManagerAggregator.CompanionOrientation.PORTRAIT);
+        assertThat(portraitPoint.x).isEqualTo(2);
+        assertThat(portraitPoint.y).isEqualTo(960);
+    }
+
+    @Test
+    public void getScaledDimensions_withHTMLResource_withWidthAndHeightEqualToScreen_shouldNotScaleWidthAndHeight() throws Exception {
+        // Default screen width is 480, height is 800
+        final Display display = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        assertThat(display.getWidth()).isEqualTo(480);
+        assertThat(display.getHeight()).isEqualTo(800);
+
+        // Width and height are evaluated in landscape
+        Point landscapePoint = subject.getScaledDimensions(
+                800 - VastVideoViewController.WEBVIEW_PADDING,
+                480 - VastVideoViewController.WEBVIEW_PADDING,
+                VastResource.Type.HTML_RESOURCE,
+                VastXmlManagerAggregator.CompanionOrientation.LANDSCAPE);
+        assertThat(landscapePoint.x).isEqualTo(800 - VastVideoViewController.WEBVIEW_PADDING);
+        assertThat(landscapePoint.y).isEqualTo(480 - VastVideoViewController.WEBVIEW_PADDING);
+
+        // Width and height are evaluated in portrait
+        Point portraitPoint = subject.getScaledDimensions(
+                480 - VastVideoViewController.WEBVIEW_PADDING,
+                800 - VastVideoViewController.WEBVIEW_PADDING,
+                VastResource.Type.HTML_RESOURCE,
+                VastXmlManagerAggregator.CompanionOrientation.PORTRAIT);
+        assertThat(portraitPoint.x).isEqualTo(480 - VastVideoViewController.WEBVIEW_PADDING);
+        assertThat(portraitPoint.y).isEqualTo(800 - VastVideoViewController.WEBVIEW_PADDING);
+    }
+
+    @Test
+    public void getScaledDimensions_withHTMLResource_withWidthAndHeightLargerThanScreen_shouldScaleWidthAndHeight() throws Exception {
+        // Default screen width is 480, height is 800
+        final Display display = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        assertThat(display.getWidth()).isEqualTo(480);
+        assertThat(display.getHeight()).isEqualTo(800);
+
+        // Width and height are evaluated in landscape
+        Point landscapePoint = subject.getScaledDimensions(5000, 5000,
+                VastResource.Type.HTML_RESOURCE,
+                VastXmlManagerAggregator.CompanionOrientation.LANDSCAPE);
+        assertThat(landscapePoint.x).isEqualTo(800 - VastVideoViewController.WEBVIEW_PADDING);
+        assertThat(landscapePoint.y).isEqualTo(480 - VastVideoViewController.WEBVIEW_PADDING);
+
+        // Width and height are evaluated in portrait
+        Point portraitPoint = subject.getScaledDimensions(1337, 4200,
+                VastResource.Type.HTML_RESOURCE,
+                VastXmlManagerAggregator.CompanionOrientation.PORTRAIT);
+        assertThat(portraitPoint.x).isEqualTo(480 - VastVideoViewController.WEBVIEW_PADDING);
+        assertThat(portraitPoint.y).isEqualTo(800 - VastVideoViewController.WEBVIEW_PADDING);
+    }
+
+    @Test
+    public void getScaledDimensions_withIFrameResource_withWidthLargerThanScreen_shouldScaleWidthAndHeight() throws Exception {
+        // Default screen width is 480, height is 800
+        final Display display = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        assertThat(display.getWidth()).isEqualTo(480);
+        assertThat(display.getHeight()).isEqualTo(800);
+
+        // Width and height are evaluated in landscape
+        Point landscapePoint = subject.getScaledDimensions(1600, 400,
+                VastResource.Type.IFRAME_RESOURCE,
+                VastXmlManagerAggregator.CompanionOrientation.LANDSCAPE);
+        assertThat(landscapePoint.x).isEqualTo(800 - VastVideoViewController.WEBVIEW_PADDING);
+        assertThat(landscapePoint.y).isEqualTo(200 - VastVideoViewController.WEBVIEW_PADDING);
+
+        // Width and height are evaluated in portrait
+        Point portraitPoint = subject.getScaledDimensions(960, 600,
+                VastResource.Type.IFRAME_RESOURCE,
+                VastXmlManagerAggregator.CompanionOrientation.PORTRAIT);
+        assertThat(portraitPoint.x).isEqualTo(480 - VastVideoViewController.WEBVIEW_PADDING);
+        assertThat(portraitPoint.y).isEqualTo(300 - VastVideoViewController.WEBVIEW_PADDING);
+    }
+
+    @Test
+    public void getScaledDimensions_withIFrameResource_withHeightLargerThanScreen_shouldScaleWidthAndHeight() throws Exception {
+        // Default screen width is 480, height is 800
+        final Display display = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        assertThat(display.getWidth()).isEqualTo(480);
+        assertThat(display.getHeight()).isEqualTo(800);
+
+        // Width and height are evaluated in landscape
+        Point landscapePoint = subject.getScaledDimensions(400, 960,
+                VastResource.Type.IFRAME_RESOURCE,
+                VastXmlManagerAggregator.CompanionOrientation.LANDSCAPE);
+        assertThat(landscapePoint.x).isEqualTo(200 - VastVideoViewController.WEBVIEW_PADDING);
+        assertThat(landscapePoint.y).isEqualTo(480 - VastVideoViewController.WEBVIEW_PADDING);
+
+        // Width and height are evaluated in portrait
+        Point portraitPoint = subject.getScaledDimensions(400, 1600,
+                VastResource.Type.IFRAME_RESOURCE,
+                VastXmlManagerAggregator.CompanionOrientation.PORTRAIT);
+        assertThat(portraitPoint.x).isEqualTo(200 - VastVideoViewController.WEBVIEW_PADDING);
+        assertThat(portraitPoint.y).isEqualTo(800 - VastVideoViewController.WEBVIEW_PADDING);
+    }
+
+    @Test
+    public void getScaledDimensions_withIFrameResource_withWidthAndHeightEqualToScreen_shouldNotScaleWidthAndHeight() throws Exception {
+        // Default screen width is 480, height is 800
+        final Display display = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        assertThat(display.getWidth()).isEqualTo(480);
+        assertThat(display.getHeight()).isEqualTo(800);
+
+        // Width and height are evaluated in landscape
+        Point landscapePoint = subject.getScaledDimensions(
+                800 - VastVideoViewController.WEBVIEW_PADDING,
+                480 - VastVideoViewController.WEBVIEW_PADDING,
+                VastResource.Type.IFRAME_RESOURCE,
+                VastXmlManagerAggregator.CompanionOrientation.LANDSCAPE);
+        assertThat(landscapePoint.x).isEqualTo(800 - VastVideoViewController.WEBVIEW_PADDING);
+        assertThat(landscapePoint.y).isEqualTo(480 - VastVideoViewController.WEBVIEW_PADDING);
+
+        // Width and height are evaluated in portrait
+        Point portraitPoint = subject.getScaledDimensions(
+                480 - VastVideoViewController.WEBVIEW_PADDING,
+                800 - VastVideoViewController.WEBVIEW_PADDING,
+                VastResource.Type.IFRAME_RESOURCE,
+                VastXmlManagerAggregator.CompanionOrientation.PORTRAIT);
+        assertThat(portraitPoint.x).isEqualTo(480 - VastVideoViewController.WEBVIEW_PADDING);
+        assertThat(portraitPoint.y).isEqualTo(800 - VastVideoViewController.WEBVIEW_PADDING);
+    }
+
+    @Test
+    public void getScaledDimensions_withIFrameResource_withWidthAdjustedToLessThanZero_shouldNotScaleWidthAndHeight() throws Exception {
+        // Default screen width is 480, height is 800
+        final Display display = ((WindowManager) context.getSystemService(
+                Context.WINDOW_SERVICE)).getDefaultDisplay();
+        assertThat(display.getWidth()).isEqualTo(480);
+        assertThat(display.getHeight()).isEqualTo(800);
+
+        // Width and height are evaluated in landscape
+        Point landscapePoint = subject.getScaledDimensions(1600, 2,
+                VastResource.Type.IFRAME_RESOURCE,
+                VastXmlManagerAggregator.CompanionOrientation.LANDSCAPE);
+        assertThat(landscapePoint.x).isEqualTo(1600);
+        assertThat(landscapePoint.y).isEqualTo(2);
+
+        // Width and height are evaluated in portrait
+        Point portraitPoint = subject.getScaledDimensions(1600, 2,
+                VastResource.Type.IFRAME_RESOURCE,
+                VastXmlManagerAggregator.CompanionOrientation.PORTRAIT);
+        assertThat(portraitPoint.x).isEqualTo(1600);
+        assertThat(portraitPoint.y).isEqualTo(2);
+    }
+
+    @Test
+    public void getScaledDimensions_withIFrameResource_withHeightAdjustedToLessThanZero_shouldNotScaleWidthAndHeight() throws Exception {
+        // Default screen width is 480, height is 800
+        final Display display = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        assertThat(display.getWidth()).isEqualTo(480);
+        assertThat(display.getHeight()).isEqualTo(800);
+
+        // Width and height are evaluated in landscape
+        Point landscapePoint = subject.getScaledDimensions(2, 960,
+                VastResource.Type.IFRAME_RESOURCE,
+                VastXmlManagerAggregator.CompanionOrientation.LANDSCAPE);
+        assertThat(landscapePoint.x).isEqualTo(2);
+        assertThat(landscapePoint.y).isEqualTo(960);
+
+        // Width and height are evaluated in portrait
+        Point portraitPoint = subject.getScaledDimensions(2, 960,
+                VastResource.Type.IFRAME_RESOURCE,
+                VastXmlManagerAggregator.CompanionOrientation.PORTRAIT);
+        assertThat(portraitPoint.x).isEqualTo(2);
+        assertThat(portraitPoint.y).isEqualTo(960);
     }
 
     @Test
@@ -919,7 +1399,7 @@ public class VastXmlManagerAggregatorTest {
     @Test
     public void evaluateVastXmlManager_withStandardInline_shouldReturnValidVastVideoConfiguration() {
         VastVideoConfig vastVideoConfig = subject.evaluateVastXmlManager(
-                TEST_NESTED_VAST_XML_STRING, HttpClient.getHttpClient(), new ArrayList<VastTracker>());
+                TEST_NESTED_VAST_XML_STRING, new ArrayList<VastTracker>());
 
         assertThat(VastUtils.vastTrackersToStrings(vastVideoConfig.getImpressionTrackers()))
                 .containsOnly("http://rtb-test.dev.tapad.com:8080/creative/imp" +
@@ -981,10 +1461,10 @@ public class VastXmlManagerAggregatorTest {
     }
 
     @Test
-    public void evaluateVastXmlManager_withAWrapperToAnInline_shouldReturnValidVastVideoConfiguration() {
-        mFakeHttpLayer.addPendingHttpResponse(200, TEST_NESTED_VAST_XML_STRING);
+    public void evaluateVastXmlManager_withAWrapperToAnInline_shouldReturnValidVastVideoConfiguration() throws Exception {
+        ShadowMoPubHttpUrlConnection.addPendingResponse(200, TEST_NESTED_VAST_XML_STRING);
         VastVideoConfig vastVideoConfig = subject.evaluateVastXmlManager(
-                TEST_VAST_XML_STRING, HttpClient.getHttpClient(), new ArrayList<VastTracker>());
+                TEST_VAST_XML_STRING, new ArrayList<VastTracker>());
 
         assertThat(VastUtils.vastTrackersToStrings(vastVideoConfig.getImpressionTrackers()))
                 .containsOnly(
@@ -1087,17 +1567,18 @@ public class VastXmlManagerAggregatorTest {
     @Test
     public void evaluateVastXmlManager_withInvalidXml_shouldReturnNullVastVideoConfiguration() {
         VastVideoConfig vastVideoConfig = subject.evaluateVastXmlManager(
-                TEST_VAST_BAD_NEST_URL_XML_STRING, HttpClient.getHttpClient(),
+                TEST_VAST_BAD_NEST_URL_XML_STRING,
                 new ArrayList<VastTracker>());
 
         assertThat(vastVideoConfig).isNull();
     }
 
     @Test
-    public void evaluateVastXmlManager_withRedirectHavingNoCompanionAd_shouldReturnVastVideoConfigurationWithCompanionAdOfWrapper() {
-        mFakeHttpLayer.addPendingHttpResponse(200, TEST_NESTED_NO_COMPANION_VAST_XML_STRING);
+    public void evaluateVastXmlManager_withRedirectHavingNoCompanionAd_shouldReturnVastVideoConfigurationWithCompanionAdOfWrapper() throws Exception {
+        ShadowMoPubHttpUrlConnection.addPendingResponse(200,
+                TEST_NESTED_NO_COMPANION_VAST_XML_STRING);
         VastVideoConfig vastVideoConfig = subject.evaluateVastXmlManager(
-                TEST_VAST_XML_STRING, HttpClient.getHttpClient(), new ArrayList<VastTracker>());
+                TEST_VAST_XML_STRING, new ArrayList<VastTracker>());
 
         VastCompanionAdConfig[] companionAds = new VastCompanionAdConfig[2];
         companionAds[0] = vastVideoConfig.getVastCompanionAd(
@@ -1122,13 +1603,49 @@ public class VastXmlManagerAggregatorTest {
     @Test
     public void evaluateVastXmlManager_withSequenceNumbers_shouldReturnVastVideoConfigurationWithNegativeSequenceNumber() {
         VastVideoConfig vastVideoConfig = subject.evaluateVastXmlManager(
-                TEST_VAST_WITH_NEGATIVE_SEQUENCE_NUMBER_XML_STRING, HttpClient.getHttpClient(),
+                TEST_VAST_WITH_NEGATIVE_SEQUENCE_NUMBER_XML_STRING,
                 new ArrayList<VastTracker>());
 
         assertThat(vastVideoConfig.getNetworkMediaFileUrl()).isEqualTo(
                 "http://negativeSequence");
         assertThat(VastUtils.vastTrackersToStrings(vastVideoConfig.getImpressionTrackers()))
                 .containsOnly("http://negativeSequence");
+    }
+
+    @Test
+    public void evaluateVastXmlManager_withVideoViewabilityTrackerInLine_shouldReturnVastVideoConfigurationWithVideoViewabilityTracker() {
+        VastVideoConfig vastVideoConfig = subject.evaluateVastXmlManager(
+                TEST_NESTED_NO_COMPANION_VAST_XML_STRING, new ArrayList<VastTracker>());
+
+        VideoViewabilityTracker tracker = vastVideoConfig.getVideoViewabilityTracker();
+        assertThat(tracker.getPercentViewable()).isEqualTo(70);
+        assertThat(tracker.getViewablePlaytimeMS()).isEqualTo(3500);
+        assertThat(tracker.getTrackingUrl()).isEqualTo("http://ad.server.com/impression/dot.png");
+    }
+
+    @Test
+    public void evaluateVastXmlManager_withVideoViewabilityTrackerInWrapper_shouldReturnVastVideoConfigurationWithVideoViewabilityTracker() throws Exception {
+        ShadowMoPubHttpUrlConnection.addPendingResponse(200, TEST_NESTED_VAST_XML_STRING);
+        VastVideoConfig vastVideoConfig = subject.evaluateVastXmlManager(TEST_VAST_XML_STRING,
+                new ArrayList<VastTracker>());
+
+        VideoViewabilityTracker tracker = vastVideoConfig.getVideoViewabilityTracker();
+        assertThat(tracker.getPercentViewable()).isEqualTo(50);
+        assertThat(tracker.getViewablePlaytimeMS()).isEqualTo(2500);
+        assertThat(tracker.getTrackingUrl()).isEqualTo("http://ad.server.com/impression/dot.gif");
+    }
+
+    @Test
+    public void evaluateVastXmlManager_withVideoViewabilityTrackerBothInWrapperAndInLine_shouldReturnVastVideoConfigurationWithVideoViewabilityTrackerFromInLine() throws Exception {
+        ShadowMoPubHttpUrlConnection.addPendingResponse(200,
+                TEST_NESTED_NO_COMPANION_VAST_XML_STRING);
+        VastVideoConfig vastVideoConfig = subject.evaluateVastXmlManager(TEST_VAST_XML_STRING,
+                new ArrayList<VastTracker>());
+
+        VideoViewabilityTracker tracker = vastVideoConfig.getVideoViewabilityTracker();
+        assertThat(tracker.getPercentViewable()).isEqualTo(70);
+        assertThat(tracker.getViewablePlaytimeMS()).isEqualTo(3500);
+        assertThat(tracker.getTrackingUrl()).isEqualTo("http://ad.server.com/impression/dot.png");
     }
 
     @Test
@@ -1174,7 +1691,7 @@ public class VastXmlManagerAggregatorTest {
     @Test
     public void evaluateVastXmlManager_withJustError_shouldReturnNullVastVideoConfiguration_shouldFireErrorTracker() {
         VastVideoConfig vastVideoConfig = subject.evaluateVastXmlManager(
-                TEST_JUST_ERROR_XML_STRING, HttpClient.getHttpClient(),
+                TEST_JUST_ERROR_XML_STRING,
                 new ArrayList<VastTracker>());
 
         assertThat(vastVideoConfig).isNull();
@@ -1183,10 +1700,10 @@ public class VastXmlManagerAggregatorTest {
     }
 
     @Test
-    public void evaluateVastXmlManager_withWrapperToJustError_shouldReturnNullVastVideoConfiguration_shouldFireErrorTrackers() {
-        mFakeHttpLayer.addPendingHttpResponse(200, TEST_JUST_ERROR_XML_STRING);
+    public void evaluateVastXmlManager_withWrapperToJustError_shouldReturnNullVastVideoConfiguration_shouldFireErrorTrackers() throws Exception {
+        ShadowMoPubHttpUrlConnection.addPendingResponse(200, TEST_JUST_ERROR_XML_STRING);
         VastVideoConfig vastVideoConfig = subject.evaluateVastXmlManager(
-                TEST_VAST_XML_STRING, HttpClient.getHttpClient(), new ArrayList<VastTracker>());
+                TEST_VAST_XML_STRING, new ArrayList<VastTracker>());
 
         assertThat(vastVideoConfig).isNull();
         verify(mockRequestQueue).add(argThat(isUrl("http://justErrorTracking?errorcode=303")));
@@ -1194,20 +1711,20 @@ public class VastXmlManagerAggregatorTest {
     }
 
     @Test
-    public void evaluateVastXmlManager_withWrapperToVastXmlError_shouldReturnNullVastVideoConfiguration_shouldFireErrorTracker() {
-        mFakeHttpLayer.addPendingHttpResponse(200, TEST_INVALID_VAST_XML_STRING);
+    public void evaluateVastXmlManager_withWrapperToVastXmlError_shouldReturnNullVastVideoConfiguration_shouldFireErrorTracker() throws Exception {
+        ShadowMoPubHttpUrlConnection.addPendingResponse(200, TEST_INVALID_VAST_XML_STRING);
         VastVideoConfig vastVideoConfig = subject.evaluateVastXmlManager(
-                TEST_VAST_XML_STRING, HttpClient.getHttpClient(), new ArrayList<VastTracker>());
+                TEST_VAST_XML_STRING, new ArrayList<VastTracker>());
 
         assertThat(vastVideoConfig).isNull();
         verifyNoMoreInteractions(mockRequestQueue);
     }
 
     @Test
-    public void evaluateVastXmlManager_withWrapperToInvalidXml_shouldReturnNullVastVideoConfiguration_shouldFireErrorTracker() {
-        mFakeHttpLayer.addPendingHttpResponse(200, TEST_INVALID_XML_STRING);
+    public void evaluateVastXmlManager_withWrapperToInvalidXml_shouldReturnNullVastVideoConfiguration_shouldFireErrorTracker() throws Exception {
+        ShadowMoPubHttpUrlConnection.addPendingResponse(200, TEST_INVALID_XML_STRING);
         VastVideoConfig vastVideoConfig = subject.evaluateVastXmlManager(
-                TEST_VAST_XML_STRING, HttpClient.getHttpClient(), new ArrayList<VastTracker>());
+                TEST_VAST_XML_STRING, new ArrayList<VastTracker>());
 
         assertThat(vastVideoConfig).isNull();
         verify(mockRequestQueue).add(argThat(isUrl("http://wrapperErrorOne?errorcode=100")));
@@ -1218,7 +1735,7 @@ public class VastXmlManagerAggregatorTest {
     @Test
     public void evaluateVastXmlManager_withWrapperToNoHttpResponse_shouldReturnNullVastVideoConfiguration_shouldFireErrorTracker() {
         VastVideoConfig vastVideoConfig = subject.evaluateVastXmlManager(
-                TEST_VAST_XML_STRING, HttpClient.getHttpClient(), new ArrayList<VastTracker>());
+                TEST_VAST_XML_STRING, new ArrayList<VastTracker>());
 
         assertThat(vastVideoConfig).isNull();
         verify(mockRequestQueue).add(argThat(isUrl("http://wrapperErrorOne?errorcode=301")));
@@ -1245,10 +1762,12 @@ public class VastXmlManagerAggregatorTest {
             final String staticResource,
             final String staticResourceType,
             final String iFrameResource,
-            final String htmlResource) {
+            final String htmlResource,
+            final String adSlotId) {
         VastCompanionAdXmlManager companionXmlManager = mock(VastCompanionAdXmlManager.class);
         when(companionXmlManager.getWidth()).thenReturn(width);
         when(companionXmlManager.getHeight()).thenReturn(height);
+        when(companionXmlManager.getAdSlotId()).thenReturn(adSlotId);
 
         VastResourceXmlManager mockResourceXmlManager = initializeVastResourceXmlManagerMock(
                 staticResource,
